@@ -1,0 +1,36 @@
+{
+  "name": "pino-multi-stream",
+  "version": "1.0.0",
+  "description": "A wrapper for the Pino logger that provides Bunyan's multipe destination stream API",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && tap --no-cov test/index.js",
+    "benchmark": "node benchmark.js"
+  },
+  "precommit": "test",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsumners/pino-multi-stream.git"
+  },
+  "keywords": [
+    "pino",
+    "logger"
+  ],
+  "author": "James Sumners <james.sumners@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jsumners/pino-multi-stream/issues"
+  },
+  "homepage": "https://github.com/jsumners/pino-multi-stream#readme",
+  "devDependencies": {
+    "bunyan": "^1.8.3",
+    "fastbench": "^1.0.1",
+    "flush-write-stream": "^1.0.2",
+    "pre-commit": "^1.1.3",
+    "standard": "^8.4.0",
+    "tap": "^7.1.2"
+  },
+  "dependencies": {
+    "pino": "^2.13.0"
+  }
+}
