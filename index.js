@@ -1,7 +1,7 @@
 'use strict'
 
 var realPino = require('pino')
-var noop = require('pino/noop')
+var noop = function () {}
 
 function pino (opts, stream) {
   if (opts && (opts.writable || opts._writableState)) {
