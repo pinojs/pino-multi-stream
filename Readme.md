@@ -82,7 +82,7 @@ the specifics for *pino-multi-stream*:
   })
   ```
 
-[pinoapi]: https://github.com/mcollina/pino#api
+[pinoapi]: https://github.com/pinojs/pino#api
 
 <a id="caveats"></a>
 ## Caveats
