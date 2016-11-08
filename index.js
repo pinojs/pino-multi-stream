@@ -103,4 +103,7 @@ function pino (opts, stream) {
   return new MSPino(loggers)
 }
 
+pino.pretty = realPino.pretty
+pino.stdSerializers = realPino.stdSerializers
+
 module.exports = pino

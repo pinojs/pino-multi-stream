@@ -89,3 +89,16 @@ test('supports grandchildren', function (t) {
   log.info('grandchild stream')
   log.debug('debug grandchild')
 })
+
+test('exposes pino.pretty', function (t) {
+  t.is(typeof pinoms.pretty, 'function')
+  t.done()
+})
+
+test('exposes pino.stdSerializers', function (t) {
+  t.is(typeof pinoms.stdSerializers, 'object')
+  t.is(pinoms.stdSerializers.hasOwnProperty('err'), true)
+  t.is(pinoms.stdSerializers.hasOwnProperty('req'), true)
+  t.is(pinoms.stdSerializers.hasOwnProperty('res'), true)
+  t.done()
+})
