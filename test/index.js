@@ -90,6 +90,12 @@ test('supports grandchildren', function (t) {
   log.debug('debug grandchild')
 })
 
+test('supports empty constructor arguments', function (t) {
+  var log = pinoms()
+  t.is(typeof log.info, 'function')
+  t.done()
+})
+
 test('exposes pino.pretty', function (t) {
   t.is(typeof pinoms.pretty, 'function')
   t.done()

@@ -4,26 +4,27 @@ var realPino = require('pino')
 var noop = function () {}
 
 function pino (opts, stream) {
+  var iopts = opts || {}
   if (opts && (opts.writable || opts._writableState)) {
-    return realPino(null, opts)
+    return realPino(null, iopts)
   }
 
-  if (opts.hasOwnProperty('stream') === true) {
-    return realPino(opts, opts.stream)
+  if (iopts.hasOwnProperty('stream') === true) {
+    return realPino(iopts, iopts.stream)
   }
 
-  if (opts.hasOwnProperty('streams') === false) {
-    return realPino(opts, stream)
+  if (iopts.hasOwnProperty('streams') === false) {
+    return realPino(iopts, stream)
   }
 
-  if (Array.isArray(opts.streams) === false) {
-    return realPino(opts, opts.streams)
+  if (Array.isArray(iopts.streams) === false) {
+    return realPino(iopts, iopts.streams)
   }
 
-  var streams = opts.streams
+  var streams = iopts.streams
   var loggers = {}
   for (var i = 0, j = streams.length; i < j; i += 1) {
-    var _opts = Object.create(opts)
+    var _opts = Object.create(iopts)
     var s = streams[i]
     _opts.level = (s.level) ? s.level : 'info'
     if (loggers[_opts.level]) {
