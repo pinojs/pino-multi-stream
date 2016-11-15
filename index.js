@@ -27,6 +27,7 @@ function pino (opts, stream) {
     var _opts = Object.create(iopts)
     var s = streams[i]
     _opts.level = (s.level) ? s.level : 'info'
+    _opts.levelVal = (s.levelVal) ? s.levelVal : undefined
     if (loggers[_opts.level]) {
       loggers[_opts.level].push(realPino(_opts, s.stream))
     } else {
@@ -34,9 +35,12 @@ function pino (opts, stream) {
     }
   }
 
+  var stdLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
+  var levels = stdLevels.concat(Object.keys(loggers).filter(function (val) {
+    return stdLevels.indexOf(val) === -1
+  }))
   function MSPino (_loggers) {
     this.loggers = _loggers
-    var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
     for (var i = 0, j = levels.length; i < j; i += 1) {
       if (this.loggers.hasOwnProperty(levels[i]) === false) {
         this[levels[i]] = noop
@@ -81,12 +85,10 @@ function pino (opts, stream) {
       }
     }
   }
-  MSPino.prototype.fatal = genLog('fatal')
-  MSPino.prototype.error = genLog('error')
-  MSPino.prototype.warn = genLog('warn')
-  MSPino.prototype.info = genLog('info')
-  MSPino.prototype.debug = genLog('debug')
-  MSPino.prototype.trace = genLog('trace')
+
+  levels.forEach(function (level) {
+    MSPino.prototype[level] = genLog(level)
+  })
 
   MSPino.prototype.child = function child (bindings) {
     var levels = Object.keys(this.loggers)

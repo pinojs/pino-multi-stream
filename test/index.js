@@ -90,6 +90,25 @@ test('supports grandchildren', function (t) {
   log.debug('debug grandchild')
 })
 
+test('supports custom levels', function (t) {
+  var stream = writeStream(function (data, enc, cb) {
+    t.is(JSON.parse(data).msg, 'bar')
+    t.done()
+  })
+  var log = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  log.foo('bar')
+})
+
+test('children support custom levels', function (t) {
+  var stream = writeStream(function (data, enc, cb) {
+    t.is(JSON.parse(data).msg, 'bar')
+    t.done()
+  })
+  var parent = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  var child = parent.child({child: 'yes'})
+  child.foo('bar')
+})
+
 test('supports empty constructor arguments', function (t) {
   var log = pinoms()
   t.is(typeof log.info, 'function')
