@@ -105,23 +105,23 @@ To illustrate what we mean, here is a benchmark of *pino* and *Bunyan* using
 "multiple" streams to write to a single stream:
 
 ```
-benchBunyanOne*10000: 875.099ms
-benchPinoMSOne*10000: 224.924ms
+benchBunyanOne*10000: 798.461ms
+benchPinoMSOne*10000: 255.239ms
 ```
 
 Now let's look at the same benchmark but increase the number of destination
 streams to four:
 
 ```
-benchBunyanFour*10000: 3288.004ms
-benchPinoMSFour*10000: 722.918ms
+benchBunyanFour*10000: 2654.913ms
+benchPinoMSFour*10000: 1282.892ms
 ```
 
 And, finally, with ten destination streams:
 
 ```
-benchBunyanTen*10000: 8142.875ms
-benchPinoMSTen*10000: 1992.805ms
+benchBunyanTen*10000: 6659.032ms
+benchPinoMSTen*10000: 5109.693ms
 ```
 
 <a id="license"></a>
