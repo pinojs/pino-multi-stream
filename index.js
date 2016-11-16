@@ -23,16 +23,26 @@ function pino (opts, stream) {
 
   var streams = iopts.streams
   var loggers = {}
+  function addLogger (opts, stream) {
+    var logger = realPino(opts, stream)
+    if (loggers[opts.level]) {
+      loggers[opts.level].push(logger)
+    } else {
+      loggers[opts.level] = [logger]
+    }
+    return logger
+  }
   for (var i = 0, j = streams.length; i < j; i += 1) {
     var _opts = Object.create(iopts)
     var s = streams[i]
     _opts.level = (s.level) ? s.level : 'info'
     _opts.levelVal = (s.levelVal) ? s.levelVal : undefined
-    if (loggers[_opts.level]) {
-      loggers[_opts.level].push(realPino(_opts, s.stream))
-    } else {
-      loggers[_opts.level] = [realPino(_opts, s.stream)]
-    }
+    var logger = addLogger(_opts, s.stream)
+    var levelValues = logger.levels.values
+    var curLevel = levelValues[_opts.level]
+    Object.keys(levelValues)
+      .filter(function (l) { return levelValues[l] > curLevel })
+      .forEach(function (l) { addLogger({level: l}, s.stream) })
   }
 
   var stdLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']

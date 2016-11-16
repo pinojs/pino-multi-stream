@@ -5,15 +5,9 @@ var test = require('tap').test
 var pinoms = require('../')
 
 test('sends to multiple streams', function (t) {
-  var messages = []
+  var messageCount = 0
   var stream = writeStream(function (data, enc, cb) {
-    messages.push(JSON.parse(data).msg)
-    if (messages.length === 3) {
-      t.is(messages.indexOf('info stream') > -1, true)
-      t.is(messages.indexOf('debug stream') > -1, true)
-      t.is(messages.indexOf('fatal stream') > -1, true)
-      t.done()
-    }
+    messageCount += 1
     cb()
   })
   var streams = [
@@ -25,6 +19,20 @@ test('sends to multiple streams', function (t) {
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
+  t.is(messageCount, 6)
+  t.done()
+})
+
+test('level include higher levels', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var log = pinoms({streams: [{level: 'info', stream: stream}]})
+  log.fatal('message')
+  t.is(messageCount, 1)
+  t.done()
 })
 
 test('supports multiple arguments', function (t) {
@@ -66,16 +74,21 @@ test('supports grandchildren', function (t) {
   var messages = []
   var stream = writeStream(function (data, enc, cb) {
     messages.push(JSON.parse(data))
-    if (messages.length === 2) {
+    if (messages.length === 3) {
       var msg1 = messages[0]
       t.is(msg1.msg, 'grandchild stream')
       t.is(msg1.child, 'one')
       t.is(msg1.grandchild, 'two')
 
       var msg2 = messages[1]
-      t.is(msg2.msg, 'debug grandchild')
+      t.is(msg2.msg, 'grandchild stream')
       t.is(msg2.child, 'one')
       t.is(msg2.grandchild, 'two')
+
+      var msg3 = messages[2]
+      t.is(msg3.msg, 'debug grandchild')
+      t.is(msg3.child, 'one')
+      t.is(msg3.grandchild, 'two')
 
       t.done()
     }
