@@ -140,3 +140,23 @@ test('exposes pino.stdSerializers', function (t) {
   t.is(pinoms.stdSerializers.hasOwnProperty('res'), true)
   t.done()
 })
+
+// issue #5
+test('properly passes along serializers', function (t) {
+  t.plan(5)
+  var stream = writeStream(function (data, enc, cb) {
+    var obj = JSON.parse(data.toString())
+    t.ok(obj.req)
+    t.ok(obj.req.foo)
+    t.is(obj.req.foo, 'bar')
+    t.ok(obj.msg)
+    t.is(obj.msg, 'an http request')
+    cb()
+  })
+  var streams = [
+    {stream: stream},
+    {level: 'fatal', stream: stream}
+  ]
+  var log = pinoms({serializers: pinoms.stdSerializers, streams: streams})
+  log.info({req: {foo: 'bar'}}, 'an http request')
+})
