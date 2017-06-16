@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "standard && tap --no-cov test/index.js",
-    "benchmark": "node benchmark.js"
+    "benchmark": "node benchmark.js",
+    "ci": "standard && tap --cov test/index.js"
   },
   "precommit": "test",
   "repository": {
