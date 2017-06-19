@@ -104,7 +104,7 @@ var log = pino({
                  // destinations
 }, multistream(streams))
 
-log.debu('this will be written to /tmp/debug.stream.out')
+log.debug('this will be written to /tmp/debug.stream.out')
 log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
 ```
