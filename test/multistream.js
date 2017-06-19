@@ -14,15 +14,16 @@ test('sends to multiple streams using string levels', function (t) {
   var streams = [
     {stream: stream},
     {level: 'debug', stream: stream},
+    {level: 'trace', stream: stream},
     {level: 'fatal', stream: stream}
   ]
   var log = pino({
-    level: 'debug'
+    level: 'trace'
   }, multistream(streams))
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
-  t.is(messageCount, 6)
+  t.is(messageCount, 9)
   t.done()
 })
 
