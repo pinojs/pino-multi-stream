@@ -18,7 +18,7 @@ test('sends to multiple streams using string levels', function (t) {
   ]
   var log = pino({
     level: 'debug'
-  }, multistream({streams: streams}))
+  }, multistream(streams))
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -39,7 +39,7 @@ test('sends to multiple streams using number levels', function (t) {
   ]
   var log = pino({
     level: 'debug'
-  }, multistream({streams: streams}))
+  }, multistream(streams))
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -53,7 +53,7 @@ test('level include higher levels', function (t) {
     messageCount += 1
     cb()
   })
-  var log = pino({}, multistream({streams: [{level: 'info', stream: stream}]}))
+  var log = pino({}, multistream([{level: 'info', stream: stream}]))
   log.fatal('message')
   t.is(messageCount, 1)
   t.done()
@@ -74,7 +74,7 @@ test('supports multiple arguments', function (t) {
     }
     cb()
   })
-  var log = pino({}, multistream({streams: stream}))
+  var log = pino({}, multistream({ stream }))
   log.info('%s %s %s %s', 'foo', 'bar', 'baz', 'foobar') // apply not invoked
   log.info('%s %s %s %s %s %s', 'foo', 'bar', 'baz', 'foobar', 'barfoo', 'foofoo') // apply invoked
 })
@@ -90,7 +90,7 @@ test('supports children', function (t) {
   var streams = [
     {stream: stream}
   ]
-  var log = pino({}, multistream({streams: streams})).child({child: 'one'})
+  var log = pino({}, multistream(streams)).child({child: 'one'})
   log.info('child stream')
 })
 
@@ -124,7 +124,7 @@ test('supports grandchildren', function (t) {
   ]
   var log = pino({
     level: 'debug'
-  }, multistream({streams: streams})).child({child: 'one'}).child({grandchild: 'two'})
+  }, multistream(streams)).child({child: 'one'}).child({grandchild: 'two'})
   log.info('grandchild stream')
   log.debug('debug grandchild')
 })
@@ -134,7 +134,7 @@ test('supports custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var log = pino({}, multistream({streams: [{level: 35, stream: stream}]}))
+  var log = pino({}, multistream([{level: 35, stream: stream}]))
   log.addLevel('foo', 35)
   log.foo('bar')
 })
@@ -144,7 +144,7 @@ test('children support custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var parent = pino({}, multistream({streams: [{level: 35, stream: stream}]}))
+  var parent = pino({}, multistream([{level: 35, stream: stream}]))
   parent.addLevel('foo', 35)
   var child = parent.child({child: 'yes'})
   child.foo('bar')
@@ -163,7 +163,7 @@ test('levelVal ovverides level', function (t) {
   ]
   var log = pino({
     level: 'debug'
-  }, multistream({streams: streams}))
+  }, multistream(streams))
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')

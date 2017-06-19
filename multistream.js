@@ -11,11 +11,11 @@ var levels = {
   trace: 10
 }
 
-function multistream (opts) {
+function multistream (streamsArray) {
   var streams = []
   var counter = 0
 
-  opts = opts || {}
+  streamsArray = streamsArray || []
 
   var res = {
     write,
@@ -24,11 +24,16 @@ function multistream (opts) {
     [needsMetadata]: true
   }
 
-  if (Array.isArray(opts.streams)) {
-    opts.streams.forEach(add)
-  } else if (opts.streams) {
-    add(opts.streams)
+  if (Array.isArray(streamsArray)) {
+    streamsArray.forEach(add)
+  } else if (streamsArray) {
+    add(streamsArray)
   }
+
+  // clean this object up
+  // or it will stay allocated forever
+  // as it is closed on the following closures
+  streamsArray = null
 
   return res
 

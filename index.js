@@ -13,14 +13,14 @@ function pinoMultiStream (opts, stream) {
   }
 
   if (iopts.hasOwnProperty('stream') === true) {
-    return fixLevel(pino(null, multistream({ streams: [{ stream: iopts.stream }] })))
+    return fixLevel(pino(null, multistream({ stream: iopts.stream })))
   }
 
   if (iopts.hasOwnProperty('streams') === false) {
-    return fixLevel(pino(null, multistream({ streams: [{ stream }] })))
+    return fixLevel(pino(null, multistream({ stream })))
   }
 
-  return fixLevel(pino(Object.assign({}, iopts, { streams: undefined }), multistream(iopts)))
+  return fixLevel(pino(Object.assign({}, iopts, { streams: undefined }), multistream(iopts.streams)))
 
   function fixLevel (pino) {
     pino.levelVal = pino.stream.minLevel
