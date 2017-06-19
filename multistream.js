@@ -41,10 +41,18 @@ function multistream (streamsArray) {
   function write (data) {
     var dest
     var level = this.lastLevel
+    var stream
     for (var i = 0; i < streams.length; i++) {
       dest = streams[i]
+      stream = dest.stream
       if (dest.level <= level) {
-        dest.stream.write(data)
+        if (stream[needsMetadata]) {
+          stream.lastLevel = level
+          stream.lastMsg = this.lastMsg
+          stream.lastObj = this.lastObj
+          stream.lastLogger = this.lastLogger
+        }
+        stream.write(data)
       } else {
         break
       }

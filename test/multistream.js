@@ -170,3 +170,27 @@ test('levelVal ovverides level', function (t) {
   t.is(messageCount, 6)
   t.done()
 })
+
+test('forwards metadata', function (t) {
+  t.plan(4)
+  var streams = [
+    {
+      stream: {
+        [Symbol.for('needsMetadata')]: true,
+        write (chunk) {
+          t.equal(log, this.lastLogger)
+          t.equal(30, this.lastLevel)
+          t.equal('a msg', this.lastMsg)
+          t.deepEqual({ hello: 'world' }, this.lastObj)
+        }
+      }
+    }
+  ]
+
+  var log = pino({
+    level: 'debug'
+  }, multistream(streams))
+
+  log.info({ hello: 'world' }, 'a msg')
+  t.done()
+})
