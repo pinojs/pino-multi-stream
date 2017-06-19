@@ -2,7 +2,7 @@
 
 var bench = require('fastbench')
 var bunyan = require('bunyan')
-var pinoms = require('./index')
+var pinoms = require('./')
 var fs = require('fs')
 var dest = fs.createWriteStream('/dev/null')
 
