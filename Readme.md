@@ -84,44 +84,63 @@ the specifics for *pino-multi-stream*:
 
 [pinoapi]: https://github.com/pinojs/pino#api
 
+### pinoms.multistream(streams)
+
+Manually create a single `multistream` as used internally by the
+wrapper:
+
+```js
+var fs = require('fs')
+var pino = require('pino')
+var multistream = require('pino-multi-stream').multistream
+var streams = [
+  {stream: fs.createWriteStream('/tmp/info.stream.out')},
+  {level: 'debug', stream: fs.createWriteStream('/tmp/debug.stream.out')},
+  {level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out')}
+]
+
+var log = pino({
+  level: 'debug' // this MUST be set at the lowest level of the
+                 // destinations
+}, multistream(streams))
+
+log.debug('this will be written to /tmp/debug.stream.out')
+log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
+log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
+```
+
 <a id="caveats"></a>
 ## Caveats
-
-+ The speed of *pino-multi-stream* is dependent upon the number of streams you
-add. Regardless of the number, it will be slower than a regular *pino* instance.
-
-+ If you create child loggers then a new logger will be created for ***each
-stream*** of the parent logger. This holds true for however many child loggers
-are created.
 
 **Stern warning:** the performance of this module being dependent on the number
 of streams you supply cannot be overstated. This module is being provided so
 that you can switch to *pino* from *Bunyan* and get some immediate improvement,
 but it is not meant to be a long term solution. We *strongly* suggest that you
 use this module for only as long as it will take you to overhaul the way
-you handle logging in your application.
+you handle logging in your application. `pino-multi-stream` offers close
+to zero overhead if _there is only one destination stream_.
 
 To illustrate what we mean, here is a benchmark of *pino* and *Bunyan* using
 "multiple" streams to write to a single stream:
 
 ```
-benchBunyanOne*10000: 798.461ms
-benchPinoMSOne*10000: 255.239ms
+benchBunyanOne*10000: 703.071ms
+benchPinoMSOne*10000: 287.060ms
 ```
 
 Now let's look at the same benchmark but increase the number of destination
 streams to four:
 
 ```
-benchBunyanFour*10000: 2654.913ms
-benchPinoMSFour*10000: 1282.892ms
+benchBunyanFour*10000: 2249.955ms
+benchPinoMSFour*10000: 1017.886ms
 ```
 
 And, finally, with ten destination streams:
 
 ```
-benchBunyanTen*10000: 6659.032ms
-benchPinoMSTen*10000: 5109.693ms
+benchBunyanTen*10000: 4950.301ms
+benchPinoMSTen*10000: 3127.361ms
 ```
 
 <a id="license"></a>

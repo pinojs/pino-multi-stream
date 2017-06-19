@@ -4,9 +4,9 @@
   "description": "A wrapper for the Pino logger that provides Bunyan's multipe destination stream API",
   "main": "index.js",
   "scripts": {
-    "test": "standard && tap --no-cov test/index.js",
+    "test": "standard && tap --no-cov test/*.js",
     "benchmark": "node benchmark.js",
-    "ci": "standard && tap --cov test/index.js"
+    "ci": "standard && tap --cov test/*.js"
   },
   "precommit": "test",
   "repository": {
@@ -29,9 +29,13 @@
     "flush-write-stream": "^1.0.2",
     "pre-commit": "^1.2.2",
     "standard": "^10.0.2",
+    "pino": "^4.6.0",
     "tap": "^10.3.3"
   },
   "dependencies": {
+    "pino": "^4.6.0"
+  },
+  "peerDependencies": {
     "pino": "^4.6.0"
   }
 }
