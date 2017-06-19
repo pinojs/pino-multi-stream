@@ -6,7 +6,7 @@
   "scripts": {
     "test": "standard && tap --no-cov test/*.js",
     "benchmark": "node benchmark.js",
-    "ci": "standard && tap --cov test/index.js"
+    "ci": "standard && tap --cov test/*.js"
   },
   "precommit": "test",
   "repository": {
