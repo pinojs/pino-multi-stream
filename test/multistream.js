@@ -195,3 +195,51 @@ test('forwards metadata', function (t) {
   log.info({ hello: 'world' }, 'a msg')
   t.done()
 })
+
+test('forward name', function (t) {
+  t.plan(2)
+  var streams = [
+    {
+      stream: {
+        [Symbol.for('needsMetadata')]: true,
+        write (chunk) {
+          const line = JSON.parse(chunk)
+          t.equal(line.name, 'helloName')
+          t.equal(line.hello, 'world')
+        }
+      }
+    }
+  ]
+
+  var log = pino({
+    level: 'debug',
+    name: 'helloName'
+  }, multistream(streams))
+
+  log.info({ hello: 'world' }, 'a msg')
+  t.done()
+})
+
+test('forward name with child', function (t) {
+  t.plan(3)
+  var streams = [
+    {
+      stream: {
+        write (chunk) {
+          const line = JSON.parse(chunk)
+          t.equal(line.name, 'helloName')
+          t.equal(line.hello, 'world')
+          t.equal(line.component, 'aComponent')
+        }
+      }
+    }
+  ]
+
+  var log = pino({
+    level: 'debug',
+    name: 'helloName'
+  }, multistream(streams)).child({ component: 'aComponent' })
+
+  log.info({ hello: 'world' }, 'a msg')
+  t.done()
+})
