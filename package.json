@@ -1,6 +1,6 @@
 {
   "name": "pino-multi-stream",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A wrapper for the Pino logger that provides Bunyan's multipe destination stream API",
   "main": "index.js",
   "scripts": {
