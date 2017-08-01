@@ -140,3 +140,61 @@ test('exposes pino.stdSerializers', function (t) {
   t.is(pinoms.stdSerializers.hasOwnProperty('res'), true)
   t.done()
 })
+
+test('forwards name', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
+  var streams = [
+    {stream: stream},
+    {level: 'debug', stream: stream},
+    {level: 'fatal', stream: stream}
+  ]
+  var log = pinoms({name: 'system', streams: streams})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 6)
+  t.done()
+})
+
+test('forwards name via child', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
+  var streams = [
+    {stream: stream},
+    {level: 'debug', stream: stream},
+    {level: 'fatal', stream: stream}
+  ]
+  var log = pinoms({streams: streams}).child({name: 'system'})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 6)
+  t.done()
+})
+
+test('forwards name without streams', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
+  var log = pinoms({name: 'system', stream: stream})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 2)
+  t.done()
+})
