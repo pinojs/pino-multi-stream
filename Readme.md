@@ -109,6 +109,17 @@ log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out
 log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
 ```
 
+### pinoms.level set accessor
+
+You can set the level to _all streams_ by changing the level property.
+It accepts the same parameters of pino.
+
+### pinoms.level get accessor
+
+The behavior of the get accessor changes if `{ bunyan: true }` is passed
+to pinoms. In that case, it implements the
+[`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
+
 <a id="caveats"></a>
 ## Caveats
 

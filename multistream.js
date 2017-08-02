@@ -21,6 +21,8 @@ function multistream (streamsArray) {
     write,
     add,
     minLevel: 0,
+    resort,
+    streams,
     [needsMetadata]: true
   }
 
@@ -57,6 +59,10 @@ function multistream (streamsArray) {
         break
       }
     }
+  }
+
+  function resort () {
+    streams.sort(compareByLevel)
   }
 
   function add (dest) {
