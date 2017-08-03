@@ -27,13 +27,14 @@
     "bunyan": "^1.8.10",
     "fastbench": "^1.0.1",
     "flush-write-stream": "^1.0.2",
-    "pino": "^4.7.1",
     "pre-commit": "^1.2.2",
     "split2": "^2.1.1",
     "standard": "^10.0.2",
     "tap": "^10.7.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "pino": "^4.7.1"
+  },
   "peerDependencies": {
     "pino": "^4.6.0"
   }
