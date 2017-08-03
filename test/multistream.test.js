@@ -243,3 +243,38 @@ test('forward name with child', function (t) {
   log.info({ hello: 'world' }, 'a msg')
   t.done()
 })
+
+test('clone generates a new multistream with all stream at the same level', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var streams = [
+    {stream: stream},
+    {level: 'debug', stream: stream},
+    {level: 'trace', stream: stream},
+    {level: 'fatal', stream: stream}
+  ]
+  var ms = multistream(streams)
+  var clone = ms.clone(30)
+
+  t.notEqual(clone, ms)
+
+  clone.streams.forEach((s, i) => {
+    t.notEqual(s, streams[i])
+    t.equal(s.stream, streams[i].stream)
+    t.equal(s.level, 30)
+  })
+
+  var log = pino({
+    level: 'trace'
+  }, clone)
+
+  log.info('info stream')
+  log.debug('debug message not counted')
+  log.fatal('fatal stream')
+  t.is(messageCount, 8)
+
+  t.done()
+})

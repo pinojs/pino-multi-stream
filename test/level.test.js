@@ -117,6 +117,25 @@ function levelTest (name, level) {
     })
     child[name]('hello world')
   })
+
+  test('child logger for level ' + name + ' does not change parent level', function (t) {
+    var instance = pino(sink(function (chunk, enc, cb) {
+      t.fail('should not be called')
+    }))
+
+    instance.addLevel('buu', level + 1)
+    instance.level = level + 1
+
+    var child = instance.child({
+      hello: 'world'
+    })
+
+    child.level = name
+
+    instance[name]('hello world')
+
+    t.end()
+  })
 }
 
 levelTest('fatal', 60)

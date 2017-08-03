@@ -112,7 +112,10 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
 ### pinoms.level set accessor
 
 You can set the level to _all streams_ by changing the level property.
-It accepts the same parameters as pino.
+It accepts the same parameters as pino. If the level is changed on a
+child logger, it does not alter the parent streams level. As this is
+costly operation, we recommend not changing the level for each child
+logger that is being created.
 
 ### pinoms.level get accessor
 

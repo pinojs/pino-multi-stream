@@ -12,7 +12,6 @@ var levels = {
 }
 
 function multistream (streamsArray) {
-  var streams = []
   var counter = 0
 
   streamsArray = streamsArray || []
@@ -21,15 +20,15 @@ function multistream (streamsArray) {
     write,
     add,
     minLevel: 0,
-    resort,
-    streams,
+    streams: [],
+    clone,
     [needsMetadata]: true
   }
 
   if (Array.isArray(streamsArray)) {
-    streamsArray.forEach(add)
+    streamsArray.forEach(add, res)
   } else if (streamsArray) {
-    add(streamsArray)
+    add.call(res, streamsArray)
   }
 
   // clean this object up
@@ -43,6 +42,7 @@ function multistream (streamsArray) {
   function write (data) {
     var dest
     var level = this.lastLevel
+    var streams = this.streams
     var stream
     for (var i = 0; i < streams.length; i++) {
       dest = streams[i]
@@ -61,17 +61,14 @@ function multistream (streamsArray) {
     }
   }
 
-  function resort () {
-    streams.sort(compareByLevel)
-  }
-
   function add (dest) {
+    var streams = this.streams
     if (typeof dest.write === 'function') {
-      return add({ stream: dest })
+      return add.call(this, { stream: dest })
     } else if (typeof dest.levelVal === 'number') {
-      return add(Object.assign({}, dest, { level: dest.levelVal, levelVal: undefined }))
+      return add.call(this, Object.assign({}, dest, { level: dest.levelVal, levelVal: undefined }))
     } else if (typeof dest.level === 'string') {
-      return add(Object.assign({}, dest, { level: levels[dest.level] }))
+      return add.call(this, Object.assign({}, dest, { level: levels[dest.level] }))
     } else if (typeof dest.level !== 'number') {
       // we default level to 'info'
       dest = Object.assign({}, dest, { level: 30 })
@@ -84,24 +81,44 @@ function multistream (streamsArray) {
     streams.unshift(dest)
     streams.sort(compareByLevel)
 
-    res.minLevel = streams[0].level
+    this.minLevel = streams[0].level
 
     return res
   }
 
-  function compareByLevel (a, b) {
-    if (a.level < b.level) {
+  function clone (level) {
+    var streams = new Array(this.streams.length)
+
+    for (var i = 0; i < streams.length; i++) {
+      streams[i] = {
+        level: level,
+        stream: this.streams[i].stream
+      }
+    }
+
+    return {
+      write,
+      add,
+      minLevel: level,
+      streams,
+      clone,
+      [needsMetadata]: true
+    }
+  }
+}
+
+function compareByLevel (a, b) {
+  if (a.level < b.level) {
+    return -1
+  } else if (a.level > b.level) {
+    return 1
+  } else {
+    if (a.counter < b.counter) {
       return -1
-    } else if (a.level > b.level) {
+    } else if (a.counter > b.counter) {
       return 1
     } else {
-      if (a.counter < b.counter) {
-        return -1
-      } else if (a.counter > b.counter) {
-        return 1
-      } else {
-        return 0
-      }
+      return 0
     }
   }
 }

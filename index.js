@@ -40,18 +40,18 @@ function pinoMultiStream (opts, stream) {
     Object.defineProperty(pino, '_setLevel', {
       value: function (val) {
         var prev = this._levelVal
+
+        // needed to support bunyan .level()
         if (typeof val === 'function') {
           val = this._levelVal
         }
 
         setLevel.call(this, val)
 
+        // to avoid child loggers changing the stream levels
+        // of parents
         if (prev !== this._levelVal) {
-          var streams = this.stream.streams
-          for (var i = 0; i < streams.length; i++) {
-            streams[i].level = this._levelVal
-          }
-          this.stream.resort()
+          this.stream = this.stream.clone(this._levelVal)
         }
       }
     })
