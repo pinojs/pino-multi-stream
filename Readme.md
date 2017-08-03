@@ -1,4 +1,4 @@
-# pino-multi-stream
+# pino-multi-stream &nbsp;[![Build Status](https://travis-ci.org/pinojs/pino-multi-stream.svg?branch=master)](https://travis-ci.org/pinojs/pino-multi-stream)
 
 *pino-multi-stream* is a wrapper around the [pino](pino) logger. The purpose
 of *pino-multi-stream* is to provide a stop-gap method for migrating from the
