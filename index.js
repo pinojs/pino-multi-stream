@@ -4,24 +4,24 @@ var pino = require('pino')
 var multistream = require('./multistream')
 
 function pinoMultiStream (opts, stream) {
+  if (stream === undefined && opts && typeof opts.write === 'function') {
+    opts = { stream: opts }
+  }
+
   var iopts = opts || {}
-  stream = stream || process.stdout // same default of pino
+  iopts.stream = iopts.stream || stream || process.stdout // same default of pino
 
-  if (opts && (opts.writable || opts._writableState)) {
-    return fixLevel(pino(null, multistream({ streams: [{ stream }] })))
+  // pretend it is Bunyan
+  var isBunyan = iopts.bunyan
+  delete iopts.bunyan
+
+  var toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
+
+  if (iopts.hasOwnProperty('streams') === true) {
+    return fixLevel(pino(toPino, multistream(iopts.streams)))
   }
 
-  var toPino = Object.assign({}, iopts, { streams: undefined })
-
-  if (iopts.hasOwnProperty('stream') === true) {
-    return fixLevel(pino(toPino, multistream({ stream: iopts.stream })))
-  }
-
-  if (iopts.hasOwnProperty('streams') === false) {
-    return fixLevel(pino(toPino, multistream({ stream })))
-  }
-
-  return fixLevel(pino(toPino, multistream(iopts.streams)))
+  return fixLevel(pino(toPino, multistream({ stream: iopts.stream })))
 
   function fixLevel (pino) {
     pino.levelVal = pino.stream.minLevel
@@ -31,6 +31,48 @@ function pinoMultiStream (opts, stream) {
         if (s.levelVal) {
           pino.addLevel(s.level, s.levelVal)
         }
+      })
+    }
+
+    // internal knowledge dependency
+    var setLevel = Object.getPrototypeOf(pino)._setLevel
+
+    Object.defineProperty(pino, '_setLevel', {
+      value: function (val) {
+        var prev = this._levelVal
+
+        // needed to support bunyan .level()
+        if (typeof val === 'function') {
+          val = this._levelVal
+        }
+
+        setLevel.call(this, val)
+
+        // to avoid child loggers changing the stream levels
+        // of parents
+        if (prev !== this._levelVal) {
+          this.stream = this.stream.clone(this._levelVal)
+        }
+      }
+    })
+
+    if (isBunyan) {
+      Object.defineProperty(pino, 'level', {
+        get: function () {
+          var that = this
+          return function (val) {
+            if (val !== undefined) {
+              that._setLevel(val)
+            }
+            return that._levelVal
+          }
+        },
+        set: pino._setLevel
+      })
+    } else {
+      Object.defineProperty(pino, 'level', {
+        get: pino._getLevel,
+        set: pino._setLevel
       })
     }
 

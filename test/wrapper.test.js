@@ -2,10 +2,9 @@
 
 var writeStream = require('flush-write-stream')
 var test = require('tap').test
-var pino = require('pino')
-var multistream = require('../').multistream
+var pinoms = require('../')
 
-test('sends to multiple streams using string levels', function (t) {
+test('sends to multiple streams', function (t) {
   var messageCount = 0
   var stream = writeStream(function (data, enc, cb) {
     messageCount += 1
@@ -14,33 +13,9 @@ test('sends to multiple streams using string levels', function (t) {
   var streams = [
     {stream: stream},
     {level: 'debug', stream: stream},
-    {level: 'trace', stream: stream},
     {level: 'fatal', stream: stream}
   ]
-  var log = pino({
-    level: 'trace'
-  }, multistream(streams))
-  log.info('info stream')
-  log.debug('debug stream')
-  log.fatal('fatal stream')
-  t.is(messageCount, 9)
-  t.done()
-})
-
-test('sends to multiple streams using number levels', function (t) {
-  var messageCount = 0
-  var stream = writeStream(function (data, enc, cb) {
-    messageCount += 1
-    cb()
-  })
-  var streams = [
-    {stream: stream},
-    {level: 20, stream: stream},
-    {level: 60, stream: stream}
-  ]
-  var log = pino({
-    level: 'debug'
-  }, multistream(streams))
+  var log = pinoms({streams: streams})
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -54,7 +29,7 @@ test('level include higher levels', function (t) {
     messageCount += 1
     cb()
   })
-  var log = pino({}, multistream([{level: 'info', stream: stream}]))
+  var log = pinoms({streams: [{level: 'info', stream: stream}]})
   log.fatal('message')
   t.is(messageCount, 1)
   t.done()
@@ -75,7 +50,7 @@ test('supports multiple arguments', function (t) {
     }
     cb()
   })
-  var log = pino({}, multistream({ stream }))
+  var log = pinoms({streams: stream})
   log.info('%s %s %s %s', 'foo', 'bar', 'baz', 'foobar') // apply not invoked
   log.info('%s %s %s %s %s %s', 'foo', 'bar', 'baz', 'foobar', 'barfoo', 'foofoo') // apply invoked
 })
@@ -91,7 +66,7 @@ test('supports children', function (t) {
   var streams = [
     {stream: stream}
   ]
-  var log = pino({}, multistream(streams)).child({child: 'one'})
+  var log = pinoms({streams: streams}).child({child: 'one'})
   log.info('child stream')
 })
 
@@ -123,9 +98,7 @@ test('supports grandchildren', function (t) {
     {stream: stream},
     {level: 'debug', stream: stream}
   ]
-  var log = pino({
-    level: 'debug'
-  }, multistream(streams)).child({child: 'one'}).child({grandchild: 'two'})
+  var log = pinoms({streams: streams}).child({child: 'one'}).child({grandchild: 'two'})
   log.info('grandchild stream')
   log.debug('debug grandchild')
 })
@@ -135,8 +108,7 @@ test('supports custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var log = pino({}, multistream([{level: 35, stream: stream}]))
-  log.addLevel('foo', 35)
+  var log = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
   log.foo('bar')
 })
 
@@ -145,26 +117,44 @@ test('children support custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var parent = pino({}, multistream([{level: 35, stream: stream}]))
-  parent.addLevel('foo', 35)
+  var parent = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
   var child = parent.child({child: 'yes'})
   child.foo('bar')
 })
 
-test('levelVal ovverides level', function (t) {
+test('supports empty constructor arguments', function (t) {
+  var log = pinoms()
+  t.is(typeof log.info, 'function')
+  t.done()
+})
+
+test('exposes pino.pretty', function (t) {
+  t.is(typeof pinoms.pretty, 'function')
+  t.done()
+})
+
+test('exposes pino.stdSerializers', function (t) {
+  t.is(typeof pinoms.stdSerializers, 'object')
+  t.is(pinoms.stdSerializers.hasOwnProperty('err'), true)
+  t.is(pinoms.stdSerializers.hasOwnProperty('req'), true)
+  t.is(pinoms.stdSerializers.hasOwnProperty('res'), true)
+  t.done()
+})
+
+test('forwards name', function (t) {
   var messageCount = 0
   var stream = writeStream(function (data, enc, cb) {
     messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
     cb()
   })
   var streams = [
     {stream: stream},
-    {level: 'blabla', levelVal: 15, stream: stream},
-    {level: 60, stream: stream}
+    {level: 'debug', stream: stream},
+    {level: 'fatal', stream: stream}
   ]
-  var log = pino({
-    level: 'debug'
-  }, multistream(streams))
+  var log = pinoms({name: 'system', streams: streams})
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -172,74 +162,39 @@ test('levelVal ovverides level', function (t) {
   t.done()
 })
 
-test('forwards metadata', function (t) {
-  t.plan(4)
+test('forwards name via child', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
   var streams = [
-    {
-      stream: {
-        [Symbol.for('needsMetadata')]: true,
-        write (chunk) {
-          t.equal(log, this.lastLogger)
-          t.equal(30, this.lastLevel)
-          t.equal('a msg', this.lastMsg)
-          t.deepEqual({ hello: 'world' }, this.lastObj)
-        }
-      }
-    }
+    {stream: stream},
+    {level: 'debug', stream: stream},
+    {level: 'fatal', stream: stream}
   ]
-
-  var log = pino({
-    level: 'debug'
-  }, multistream(streams))
-
-  log.info({ hello: 'world' }, 'a msg')
+  var log = pinoms({streams: streams}).child({name: 'system'})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 6)
   t.done()
 })
 
-test('forward name', function (t) {
-  t.plan(2)
-  var streams = [
-    {
-      stream: {
-        [Symbol.for('needsMetadata')]: true,
-        write (chunk) {
-          const line = JSON.parse(chunk)
-          t.equal(line.name, 'helloName')
-          t.equal(line.hello, 'world')
-        }
-      }
-    }
-  ]
-
-  var log = pino({
-    level: 'debug',
-    name: 'helloName'
-  }, multistream(streams))
-
-  log.info({ hello: 'world' }, 'a msg')
-  t.done()
-})
-
-test('forward name with child', function (t) {
-  t.plan(3)
-  var streams = [
-    {
-      stream: {
-        write (chunk) {
-          const line = JSON.parse(chunk)
-          t.equal(line.name, 'helloName')
-          t.equal(line.hello, 'world')
-          t.equal(line.component, 'aComponent')
-        }
-      }
-    }
-  ]
-
-  var log = pino({
-    level: 'debug',
-    name: 'helloName'
-  }, multistream(streams)).child({ component: 'aComponent' })
-
-  log.info({ hello: 'world' }, 'a msg')
+test('forwards name without streams', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
+  var log = pinoms({name: 'system', stream: stream})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 2)
   t.done()
 })
