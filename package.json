@@ -34,8 +34,5 @@
   },
   "dependencies": {
     "pino": "^4.7.1"
-  },
-  "peerDependencies": {
-    "pino": "^4.6.0"
   }
 }
