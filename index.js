@@ -21,7 +21,7 @@ function pinoMultiStream (opts, stream) {
     return fixLevel(pino(toPino, multistream(iopts.streams)))
   }
 
-  return fixLevel(pino(toPino, multistream({ stream: iopts.stream })))
+  return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level })))
 
   function fixLevel (pino) {
     pino.levelVal = pino.stream.minLevel
