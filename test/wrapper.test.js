@@ -198,3 +198,20 @@ test('forwards name without streams', function (t) {
   t.is(messageCount, 2)
   t.done()
 })
+
+test('correctly set level if passed with just one stream', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    var line = JSON.parse(data)
+    t.equal(line.name, 'system')
+    cb()
+  })
+  var log = pinoms({name: 'system', level: 'debug', stream: stream})
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(log.level, 'debug')
+  t.is(messageCount, 3)
+  t.done()
+})
