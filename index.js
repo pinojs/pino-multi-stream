@@ -24,8 +24,9 @@ function pinoMultiStream (opts, stream) {
   return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level })))
 
   function fixLevel (pino) {
-    if(!pino.levelVal)
+    if(!pino.levelVal) {
       pino.levelVal = pino.stream.minLevel
+    }
     
     if (Array.isArray(iopts.streams)) {
       iopts.streams.forEach(function (s) {
