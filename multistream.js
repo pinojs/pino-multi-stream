@@ -3,6 +3,7 @@
 var needsMetadata = Symbol.for('needsMetadata')
 
 var levels = {
+  silent: Infinity,
   fatal: 60,
   error: 50,
   warn: 40,
