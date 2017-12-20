@@ -15,7 +15,8 @@ test('sends to multiple streams using string levels', function (t) {
     {stream: stream},
     {level: 'debug', stream: stream},
     {level: 'trace', stream: stream},
-    {level: 'fatal', stream: stream}
+    {level: 'fatal', stream: stream},
+    {level: 'silent', stream: stream}
   ]
   var log = pino({
     level: 'trace'
@@ -23,6 +24,7 @@ test('sends to multiple streams using string levels', function (t) {
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
+  log.silent('silent stream')
   t.is(messageCount, 9)
   t.done()
 })
