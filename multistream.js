@@ -1,8 +1,8 @@
 'use strict'
 
-var needsMetadata = Symbol.for('needsMetadata')
+const needsMetadata = Symbol.for('needsMetadata')
 
-var levels = {
+const levels = {
   silent: Infinity,
   fatal: 60,
   error: 50,
@@ -17,7 +17,7 @@ function multistream (streamsArray) {
 
   streamsArray = streamsArray || []
 
-  var res = {
+  const res = {
     write,
     add,
     minLevel: 0,
@@ -42,18 +42,19 @@ function multistream (streamsArray) {
   // we can exit early because the streams are ordered by level
   function write (data) {
     var dest
-    var level = this.lastLevel
-    var streams = this.streams
+    const level = this.lastLevel
+    const { streams } = this
     var stream
     for (var i = 0; i < streams.length; i++) {
       dest = streams[i]
       stream = dest.stream
       if (dest.level <= level) {
         if (stream[needsMetadata]) {
+          const { lastMsg, lastObj, lastLogger } = this
           stream.lastLevel = level
-          stream.lastMsg = this.lastMsg
-          stream.lastObj = this.lastObj
-          stream.lastLogger = this.lastLogger
+          stream.lastMsg = lastMsg
+          stream.lastObj = lastObj
+          stream.lastLogger = lastLogger
         }
         stream.write(data)
       } else {
@@ -63,7 +64,7 @@ function multistream (streamsArray) {
   }
 
   function add (dest) {
-    var streams = this.streams
+    const { streams } = this
     if (typeof dest.write === 'function') {
       return add.call(this, { stream: dest })
     } else if (typeof dest.levelVal === 'number') {

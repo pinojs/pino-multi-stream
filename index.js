@@ -1,21 +1,27 @@
 'use strict'
 
-var pino = require('pino')
-var multistream = require('./multistream')
+const pino = require('pino')
+const multistream = require('./multistream')
+const {
+  streamSym,
+  setLevelSym,
+  getLevelSym,
+  levelValSym
+} = pino.symbols
 
 function pinoMultiStream (opts, stream) {
   if (stream === undefined && opts && typeof opts.write === 'function') {
     opts = { stream: opts }
   }
 
-  var iopts = opts || {}
+  const iopts = opts || {}
   iopts.stream = iopts.stream || stream || process.stdout // same default of pino
 
   // pretend it is Bunyan
-  var isBunyan = iopts.bunyan
+  const isBunyan = iopts.bunyan
   delete iopts.bunyan
 
-  var toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
+  const toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
 
   if (iopts.hasOwnProperty('streams') === true) {
     return fixLevel(pino(toPino, multistream(iopts.streams)))
@@ -24,7 +30,7 @@ function pinoMultiStream (opts, stream) {
   return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level })))
 
   function fixLevel (pino) {
-    pino.levelVal = pino.stream.minLevel
+    pino.levelVal = pino[streamSym].minLevel
 
     if (Array.isArray(iopts.streams)) {
       iopts.streams.forEach(function (s) {
@@ -35,26 +41,24 @@ function pinoMultiStream (opts, stream) {
     }
 
     // internal knowledge dependency
-    var setLevel = Object.getPrototypeOf(pino)._setLevel
+    var setLevel = pino[setLevelSym]
 
-    Object.defineProperty(pino, '_setLevel', {
-      value: function (val) {
-        var prev = this._levelVal
+    pino[setLevelSym] = function (val) {
+      var prev = this[levelValSym]
 
-        // needed to support bunyan .level()
-        if (typeof val === 'function') {
-          val = this._levelVal
-        }
-
-        setLevel.call(this, val)
-
-        // to avoid child loggers changing the stream levels
-        // of parents
-        if (prev !== this._levelVal) {
-          this.stream = this.stream.clone(this._levelVal)
-        }
+      // needed to support bunyan .level()
+      if (typeof val === 'function') {
+        val = this[levelValSym]
       }
-    })
+
+      setLevel.call(this, val)
+
+      // to avoid child loggers changing the stream levels
+      // of parents
+      if (prev !== this[levelValSym]) {
+        this[streamSym] = this[streamSym].clone(this[levelValSym])
+      }
+    }
 
     if (isBunyan) {
       Object.defineProperty(pino, 'level', {
@@ -62,17 +66,17 @@ function pinoMultiStream (opts, stream) {
           var that = this
           return function (val) {
             if (val !== undefined) {
-              that._setLevel(val)
+              that[setLevelSym](val)
             }
-            return that._levelVal
+            return that[levelValSym]
           }
         },
-        set: pino._setLevel
+        set: pino[setLevelSym]
       })
     } else {
       Object.defineProperty(pino, 'level', {
-        get: pino._getLevel,
-        set: pino._setLevel
+        get: pino[getLevelSym],
+        set: pino[setLevelSym]
       })
     }
 
@@ -80,7 +84,9 @@ function pinoMultiStream (opts, stream) {
   }
 }
 
+
+Object.assign(pinoMultiStream, pino)
+pinoMultiStream.multistream = multistream
+
 module.exports = pinoMultiStream
-module.exports.multistream = multistream
-module.exports.stdSerializers = pino.stdSerializers
-module.exports.pretty = pino.pretty
+
