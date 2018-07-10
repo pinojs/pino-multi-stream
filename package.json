@@ -4,7 +4,7 @@
   "description": "A wrapper for the Pino logger that provides Bunyan's multipe destination stream API",
   "main": "index.js",
   "scripts": {
-    "test": "tap --no-cov test/*.test.js",
+    "test": "standard && tap --no-cov test/*.test.js",
     "benchmark": "node benchmark.js",
     "ci": "standard && tap --cov test/*.test.js"
   },

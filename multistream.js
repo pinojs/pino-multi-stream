@@ -1,6 +1,6 @@
 'use strict'
 
-const needsMetadata = Symbol.for('needsMetadata')
+const metadata = Symbol.for('pino.metadata')
 
 const levels = {
   silent: Infinity,
@@ -23,7 +23,7 @@ function multistream (streamsArray) {
     minLevel: 0,
     streams: [],
     clone,
-    [needsMetadata]: true
+    [metadata]: true
   }
 
   if (Array.isArray(streamsArray)) {
@@ -49,7 +49,7 @@ function multistream (streamsArray) {
       dest = streams[i]
       stream = dest.stream
       if (dest.level <= level) {
-        if (stream[needsMetadata]) {
+        if (stream[metadata]) {
           const { lastMsg, lastObj, lastLogger } = this
           stream.lastLevel = level
           stream.lastMsg = lastMsg
@@ -104,7 +104,7 @@ function multistream (streamsArray) {
       minLevel: level,
       streams,
       clone,
-      [needsMetadata]: true
+      [metadata]: true
     }
   }
 }

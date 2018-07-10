@@ -84,9 +84,7 @@ function pinoMultiStream (opts, stream) {
   }
 }
 
-
 Object.assign(pinoMultiStream, pino)
 pinoMultiStream.multistream = multistream
 
 module.exports = pinoMultiStream
-

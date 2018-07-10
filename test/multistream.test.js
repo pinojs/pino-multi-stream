@@ -179,7 +179,7 @@ test('forwards metadata', function (t) {
   var streams = [
     {
       stream: {
-        [Symbol.for('needsMetadata')]: true,
+        [Symbol.for('pino.metadata')]: true,
         write (chunk) {
           t.equal(log, this.lastLogger)
           t.equal(30, this.lastLevel)
@@ -203,7 +203,7 @@ test('forward name', function (t) {
   var streams = [
     {
       stream: {
-        [Symbol.for('needsMetadata')]: true,
+        [Symbol.for('pino.metadata')]: true,
         write (chunk) {
           const line = JSON.parse(chunk)
           t.equal(line.name, 'helloName')
