@@ -24,7 +24,6 @@ test('sends to multiple streams using string levels', function (t) {
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
-  log.silent('silent stream')
   t.is(messageCount, 9)
   t.done()
 })
@@ -137,8 +136,11 @@ test('supports custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var log = pino({}, multistream([{level: 35, stream: stream}]))
-  log.addLevel('foo', 35)
+  var log = pino({
+    customLevels: {
+      foo: 35
+    }
+  }, multistream([{level: 35, stream: stream}]))
   log.foo('bar')
 })
 
@@ -147,8 +149,11 @@ test('children support custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var parent = pino({}, multistream([{level: 35, stream: stream}]))
-  parent.addLevel('foo', 35)
+  var parent = pino({
+    customLevels: {
+      foo: 35
+    }
+  }, multistream([{level: 35, stream: stream}]))
   var child = parent.child({child: 'yes'})
   child.foo('bar')
 })

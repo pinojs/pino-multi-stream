@@ -119,11 +119,14 @@ function levelTest (name, level) {
   })
 
   test('child logger for level ' + name + ' does not change parent level', function (t) {
-    var instance = pino(sink(function (chunk, enc, cb) {
+    var instance = pino({
+      customLevels: {
+        buu: level + 1
+      }
+    }, sink(function (chunk, enc, cb) {
       t.fail('should not be called')
     }))
 
-    instance.addLevel('buu', level + 1)
     instance.level = level + 1
 
     var child = instance.child({

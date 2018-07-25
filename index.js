@@ -20,7 +20,6 @@ function pinoMultiStream (opts, stream) {
   // pretend it is Bunyan
   const isBunyan = iopts.bunyan
   delete iopts.bunyan
-
   const toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
 
   if (iopts.hasOwnProperty('streams') === true) {
@@ -30,7 +29,7 @@ function pinoMultiStream (opts, stream) {
   return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level })))
 
   function fixLevel (pino) {
-    pino.levelVal = pino[streamSym].minLevel
+    pino.level = pino[streamSym].minLevel
 
     if (Array.isArray(iopts.streams)) {
       iopts.streams.forEach(function (s) {

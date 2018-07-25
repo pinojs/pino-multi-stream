@@ -109,7 +109,15 @@ test('supports custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var log = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  var log = pinoms({
+    customLevels: {
+      foo: 35
+    },
+    streams: [{
+      level: 35,
+      stream: stream
+    }
+    ]})
   log.foo('bar')
 })
 
@@ -118,7 +126,15 @@ test('children support custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var parent = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  var parent = pinoms({
+    customLevels: {
+      foo: 35
+    },
+    streams: [{
+      level: 35,
+      stream: stream
+    }
+    ]})
   var child = parent.child({child: 'yes'})
   child.foo('bar')
 })

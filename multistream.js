@@ -77,7 +77,6 @@ function multistream (streamsArray) {
     } else {
       dest = Object.assign({}, dest)
     }
-
     dest.id = counter++
 
     streams.unshift(dest)
