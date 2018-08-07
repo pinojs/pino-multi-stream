@@ -21,8 +21,16 @@ regarding the performance of this module.
 <a id="install"></a>
 ## Install
 
+For Pino v5+
+
 ```js
 npm install -s pino-multi-stream
+```
+
+For Pino v4 and below:
+
+```js
+npm install -s pino-multi-stream@legacy #v3 pino-multi-stream line
 ```
 
 *pino-multi-stream* does not provide the CLI that *pino* provides. Therefore,

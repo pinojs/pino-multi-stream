@@ -1,12 +1,12 @@
 'use strict'
 
-var bench = require('fastbench')
-var bunyan = require('bunyan')
-var pinoms = require('./')
-var fs = require('fs')
-var dest = fs.createWriteStream('/dev/null')
+const bench = require('fastbench')
+const bunyan = require('bunyan')
+const pinoms = require('./')
+const fs = require('fs')
+const dest = fs.createWriteStream('/dev/null')
 
-var tenStreams = [
+const tenStreams = [
   {stream: dest},
   {stream: dest},
   {stream: dest},
@@ -18,33 +18,33 @@ var tenStreams = [
   {level: 'warn', stream: dest},
   {level: 'fatal', stream: dest}
 ]
-var pinomsTen = pinoms({streams: tenStreams})
+const pinomsTen = pinoms({streams: tenStreams})
 
-var fourStreams = [
+const fourStreams = [
   {stream: dest},
   {stream: dest},
   {level: 'debug', stream: dest},
   {level: 'trace', stream: dest}
 ]
-var pinomsFour = pinoms({streams: fourStreams})
+const pinomsFour = pinoms({streams: fourStreams})
 
-var pinomsOne = pinoms({streams: [{stream: dest}]})
-var blogOne = bunyan.createLogger({
+const pinomsOne = pinoms({streams: [{stream: dest}]})
+const blogOne = bunyan.createLogger({
   name: 'myapp',
   streams: [{stream: dest}]
 })
 
-var blogTen = bunyan.createLogger({
+const blogTen = bunyan.createLogger({
   name: 'myapp',
   streams: tenStreams
 })
-var blogFour = bunyan.createLogger({
+const blogFour = bunyan.createLogger({
   name: 'myapp',
   streams: fourStreams
 })
 
-var max = 10
-var run = bench([
+const max = 10
+const run = bench([
   function benchBunyanTen (cb) {
     for (var i = 0; i < max; i++) {
       blogTen.info('hello world')

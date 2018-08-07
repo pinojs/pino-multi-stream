@@ -1,6 +1,7 @@
 'use strict'
 
 var writeStream = require('flush-write-stream')
+var pino = require('pino')
 var test = require('tap').test
 var pinoms = require('../')
 
@@ -108,7 +109,15 @@ test('supports custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var log = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  var log = pinoms({
+    customLevels: {
+      foo: 35
+    },
+    streams: [{
+      level: 35,
+      stream: stream
+    }
+    ]})
   log.foo('bar')
 })
 
@@ -117,7 +126,15 @@ test('children support custom levels', function (t) {
     t.is(JSON.parse(data).msg, 'bar')
     t.done()
   })
-  var parent = pinoms({streams: [{level: 'foo', levelVal: 35, stream: stream}]})
+  var parent = pinoms({
+    customLevels: {
+      foo: 35
+    },
+    streams: [{
+      level: 35,
+      stream: stream
+    }
+    ]})
   var child = parent.child({child: 'yes'})
   child.foo('bar')
 })
@@ -128,16 +145,38 @@ test('supports empty constructor arguments', function (t) {
   t.done()
 })
 
-test('exposes pino.pretty', function (t) {
-  t.is(typeof pinoms.pretty, 'function')
+test('exposes pino.destination', function (t) {
+  t.is(pinoms.destination, pino.destination)
+  t.done()
+})
+
+test('exposes pino.extreme', function (t) {
+  t.is(pinoms.extreme, pino.extreme)
   t.done()
 })
 
 test('exposes pino.stdSerializers', function (t) {
-  t.is(typeof pinoms.stdSerializers, 'object')
-  t.is(pinoms.stdSerializers.hasOwnProperty('err'), true)
-  t.is(pinoms.stdSerializers.hasOwnProperty('req'), true)
-  t.is(pinoms.stdSerializers.hasOwnProperty('res'), true)
+  t.is(pinoms.stdSerializers, pino.stdSerializers)
+  t.done()
+})
+
+test('exposes pino.stdTimeFunctions', function (t) {
+  t.is(pinoms.stdTimeFunctions, pino.stdTimeFunctions)
+  t.done()
+})
+
+test('exposes pino.LOG_VERSION', function (t) {
+  t.is(pinoms.LOG_VERSION, pino.LOG_VERSION)
+  t.done()
+})
+
+test('exposes pino.levels', function (t) {
+  t.is(pinoms.levels, pino.levels)
+  t.done()
+})
+
+test('exposes pino.symbols', function (t) {
+  t.is(pinoms.symbols, pino.symbols)
   t.done()
 })
 
