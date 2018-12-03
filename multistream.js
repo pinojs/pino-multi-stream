@@ -50,8 +50,9 @@ function multistream (streamsArray) {
       stream = dest.stream
       if (dest.level <= level) {
         if (stream[metadata]) {
-          const { lastMsg, lastObj, lastLogger } = this
+          const { lastTime, lastMsg, lastObj, lastLogger } = this
           stream.lastLevel = level
+          stream.lastTime = lastTime
           stream.lastMsg = lastMsg
           stream.lastObj = lastObj
           stream.lastLogger = lastLogger

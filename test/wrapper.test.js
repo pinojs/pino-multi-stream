@@ -12,11 +12,11 @@ test('sends to multiple streams', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream},
-    {level: 'fatal', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'fatal', stream: stream }
   ]
-  var log = pinoms({streams: streams})
+  var log = pinoms({ streams: streams })
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -30,7 +30,7 @@ test('level include higher levels', function (t) {
     messageCount += 1
     cb()
   })
-  var log = pinoms({streams: [{level: 'info', stream: stream}]})
+  var log = pinoms({ streams: [{ level: 'info', stream: stream }] })
   log.fatal('message')
   t.is(messageCount, 1)
   t.done()
@@ -51,7 +51,7 @@ test('supports multiple arguments', function (t) {
     }
     cb()
   })
-  var log = pinoms({streams: stream})
+  var log = pinoms({ streams: stream })
   log.info('%s %s %s %s', 'foo', 'bar', 'baz', 'foobar') // apply not invoked
   log.info('%s %s %s %s %s %s', 'foo', 'bar', 'baz', 'foobar', 'barfoo', 'foofoo') // apply invoked
 })
@@ -65,9 +65,9 @@ test('supports children', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream}
+    { stream: stream }
   ]
-  var log = pinoms({streams: streams}).child({child: 'one'})
+  var log = pinoms({ streams: streams }).child({ child: 'one' })
   log.info('child stream')
 })
 
@@ -96,10 +96,10 @@ test('supports grandchildren', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream }
   ]
-  var log = pinoms({streams: streams}).child({child: 'one'}).child({grandchild: 'two'})
+  var log = pinoms({ streams: streams }).child({ child: 'one' }).child({ grandchild: 'two' })
   log.info('grandchild stream')
   log.debug('debug grandchild')
 })
@@ -117,7 +117,7 @@ test('supports custom levels', function (t) {
       level: 35,
       stream: stream
     }
-    ]})
+    ] })
   log.foo('bar')
 })
 
@@ -134,8 +134,8 @@ test('children support custom levels', function (t) {
       level: 35,
       stream: stream
     }
-    ]})
-  var child = parent.child({child: 'yes'})
+    ] })
+  var child = parent.child({ child: 'yes' })
   child.foo('bar')
 })
 
@@ -189,11 +189,11 @@ test('forwards name', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream},
-    {level: 'fatal', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'fatal', stream: stream }
   ]
-  var log = pinoms({name: 'system', streams: streams})
+  var log = pinoms({ name: 'system', streams: streams })
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -210,11 +210,11 @@ test('forwards name via child', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream},
-    {level: 'fatal', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'fatal', stream: stream }
   ]
-  var log = pinoms({streams: streams}).child({name: 'system'})
+  var log = pinoms({ streams: streams }).child({ name: 'system' })
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -230,7 +230,7 @@ test('forwards name without streams', function (t) {
     t.equal(line.name, 'system')
     cb()
   })
-  var log = pinoms({name: 'system', stream: stream})
+  var log = pinoms({ name: 'system', stream: stream })
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
@@ -246,7 +246,7 @@ test('correctly set level if passed with just one stream', function (t) {
     t.equal(line.name, 'system')
     cb()
   })
-  var log = pinoms({name: 'system', level: 'debug', stream: stream})
+  var log = pinoms({ name: 'system', level: 'debug', stream: stream })
   log.info('info stream')
   log.debug('debug stream')
   log.fatal('fatal stream')
