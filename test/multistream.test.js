@@ -12,11 +12,11 @@ test('sends to multiple streams using string levels', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream},
-    {level: 'trace', stream: stream},
-    {level: 'fatal', stream: stream},
-    {level: 'silent', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'trace', stream: stream },
+    { level: 'fatal', stream: stream },
+    { level: 'silent', stream: stream }
   ]
   var log = pino({
     level: 'trace'
@@ -35,9 +35,9 @@ test('sends to multiple streams using number levels', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 20, stream: stream},
-    {level: 60, stream: stream}
+    { stream: stream },
+    { level: 20, stream: stream },
+    { level: 60, stream: stream }
   ]
   var log = pino({
     level: 'debug'
@@ -55,7 +55,7 @@ test('level include higher levels', function (t) {
     messageCount += 1
     cb()
   })
-  var log = pino({}, multistream([{level: 'info', stream: stream}]))
+  var log = pino({}, multistream([{ level: 'info', stream: stream }]))
   log.fatal('message')
   t.is(messageCount, 1)
   t.done()
@@ -90,9 +90,9 @@ test('supports children', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream}
+    { stream: stream }
   ]
-  var log = pino({}, multistream(streams)).child({child: 'one'})
+  var log = pino({}, multistream(streams)).child({ child: 'one' })
   log.info('child stream')
 })
 
@@ -121,12 +121,12 @@ test('supports grandchildren', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream }
   ]
   var log = pino({
     level: 'debug'
-  }, multistream(streams)).child({child: 'one'}).child({grandchild: 'two'})
+  }, multistream(streams)).child({ child: 'one' }).child({ grandchild: 'two' })
   log.info('grandchild stream')
   log.debug('debug grandchild')
 })
@@ -140,8 +140,32 @@ test('supports custom levels', function (t) {
     customLevels: {
       foo: 35
     }
-  }, multistream([{level: 35, stream: stream}]))
+  }, multistream([{ level: 35, stream: stream }]))
   log.foo('bar')
+})
+
+test('supports pretty print', function (t) {
+  var stream = writeStream(function (data, enc, cb) {
+    t.isNot(data.toString().match(/INFO.*: pretty print/), null)
+    t.done()
+    cb()
+  })
+  var outStream = pino({
+    prettifier: require('pino-pretty'),
+    prettyPrint: {
+      levelFirst: true,
+      colorize: false
+    }
+  }, stream)
+
+  var log = pino({
+    level: 'debug',
+    name: 'helloName'
+  }, multistream([
+    { stream: outStream[pino.symbols.streamSym] }
+  ]))
+
+  log.info('pretty print')
 })
 
 test('children support custom levels', function (t) {
@@ -153,8 +177,8 @@ test('children support custom levels', function (t) {
     customLevels: {
       foo: 35
     }
-  }, multistream([{level: 35, stream: stream}]))
-  var child = parent.child({child: 'yes'})
+  }, multistream([{ level: 35, stream: stream }]))
+  var child = parent.child({ child: 'yes' })
   child.foo('bar')
 })
 
@@ -165,9 +189,9 @@ test('levelVal ovverides level', function (t) {
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'blabla', levelVal: 15, stream: stream},
-    {level: 60, stream: stream}
+    { stream: stream },
+    { level: 'blabla', levelVal: 15, stream: stream },
+    { level: 60, stream: stream }
   ]
   var log = pino({
     level: 'debug'
@@ -258,10 +282,10 @@ test('clone generates a new multistream with all stream at the same level', func
     cb()
   })
   var streams = [
-    {stream: stream},
-    {level: 'debug', stream: stream},
-    {level: 'trace', stream: stream},
-    {level: 'fatal', stream: stream}
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'trace', stream: stream },
+    { level: 'fatal', stream: stream }
   ]
   var ms = multistream(streams)
   var clone = ms.clone(30)

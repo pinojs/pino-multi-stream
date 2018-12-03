@@ -1,1 +1,9 @@
+# Dependency directory
 node_modules/
+
+# VS Code
+.vscode/
+
+# lock files
+yarn.lock
+package-lock.json

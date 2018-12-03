@@ -7,31 +7,31 @@ const fs = require('fs')
 const dest = fs.createWriteStream('/dev/null')
 
 const tenStreams = [
-  {stream: dest},
-  {stream: dest},
-  {stream: dest},
-  {stream: dest},
-  {stream: dest},
-  {level: 'debug', stream: dest},
-  {level: 'debug', stream: dest},
-  {level: 'trace', stream: dest},
-  {level: 'warn', stream: dest},
-  {level: 'fatal', stream: dest}
+  { stream: dest },
+  { stream: dest },
+  { stream: dest },
+  { stream: dest },
+  { stream: dest },
+  { level: 'debug', stream: dest },
+  { level: 'debug', stream: dest },
+  { level: 'trace', stream: dest },
+  { level: 'warn', stream: dest },
+  { level: 'fatal', stream: dest }
 ]
-const pinomsTen = pinoms({streams: tenStreams})
+const pinomsTen = pinoms({ streams: tenStreams })
 
 const fourStreams = [
-  {stream: dest},
-  {stream: dest},
-  {level: 'debug', stream: dest},
-  {level: 'trace', stream: dest}
+  { stream: dest },
+  { stream: dest },
+  { level: 'debug', stream: dest },
+  { level: 'trace', stream: dest }
 ]
-const pinomsFour = pinoms({streams: fourStreams})
+const pinomsFour = pinoms({ streams: fourStreams })
 
-const pinomsOne = pinoms({streams: [{stream: dest}]})
+const pinomsOne = pinoms({ streams: [{ stream: dest }] })
 const blogOne = bunyan.createLogger({
   name: 'myapp',
-  streams: [{stream: dest}]
+  streams: [{ stream: dest }]
 })
 
 const blogTen = bunyan.createLogger({
