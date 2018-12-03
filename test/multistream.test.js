@@ -151,7 +151,6 @@ test('supports pretty print', function (t) {
     cb()
   })
   var outStream = pino({
-    prettifier: require('pino-pretty'),
     prettyPrint: {
       levelFirst: true,
       colorize: false
