@@ -52,7 +52,7 @@ log.info('this will be written to /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/fatal.stream.out')
 ```
 And to use with [pino-pretty](https://github.com/pinojs/pino-pretty)
-```
+```js
 const fs = require('fs');
 const Pino = require('pino');
 const PinoPretty = require('pino-pretty');
