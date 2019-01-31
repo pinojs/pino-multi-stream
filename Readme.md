@@ -51,6 +51,35 @@ var log = pinoms({streams: streams})
 log.info('this will be written to /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/fatal.stream.out')
 ```
+And to use with [pino-pretty](https://github.com/pinojs/pino-pretty)
+```
+const fs = require('fs');
+const Pino = require('pino');
+const PinoPretty = require('pino-pretty');
+const PinoGetPrettyStream = require('pino/lib/tools').getPrettyStream;
+const multistream = require('pino-multi-stream').multistream
+
+var prettyStream = PinoGetPrettyStream({
+        levelFirst: false,
+        translateTime: true,
+        colorize: true
+    },
+    PinoPretty,
+    process.stdout);
+
+var streams = [
+    {stream: fs.createWriteStream('my.log') },
+    // {stream: process.stdout }
+    {stream: prettyStream }
+]
+
+var pinoOptions = {
+    name: this._name
+}
+var logger = Pino(pinoOptions, multistream(streams));
+
+logger.info("HELLO %s!", "World")
+```
 
 <a id="api"></a>
 ## API
