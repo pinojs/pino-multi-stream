@@ -110,18 +110,10 @@ function multistream (streamsArray) {
 }
 
 function compareByLevel (a, b) {
-  if (a.level < b.level) {
-    return -1
-  } else if (a.level > b.level) {
-    return 1
+  if (a.level !== b.level) {
+    return a.level - b.level
   } else {
-    if (a.counter < b.counter) {
-      return -1
-    } else if (a.counter > b.counter) {
-      return 1
-    } else {
-      return 0
-    }
+    return a.counter - b.counter
   }
 }
 
