@@ -2,7 +2,7 @@
 
 const metadata = Symbol.for('pino.metadata')
 
-const levels = {
+const defaultLevels = {
   silent: Infinity,
   fatal: 60,
   error: 50,
@@ -12,7 +12,7 @@ const levels = {
   trace: 10
 }
 
-function multistream (streamsArray) {
+function multistream(streamsArray, levels = defaultLevels) {
   var counter = 0
 
   streamsArray = streamsArray || []
