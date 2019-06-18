@@ -4,6 +4,7 @@ var writeStream = require('flush-write-stream')
 var pino = require('pino')
 var test = require('tap').test
 var pinoms = require('../')
+var { Writable } = require('stream')
 
 test('sends to multiple streams', function (t) {
   var messageCount = 0
@@ -253,4 +254,41 @@ test('correctly set level if passed with just one stream', function (t) {
   t.is(log.level, 'debug')
   t.is(messageCount, 3)
   t.done()
+})
+
+test('creates pretty write stream', function (t) {
+  const prettyStream = pinoms.prettyStream()
+  t.is(typeof prettyStream.write, 'function')
+  t.done()
+})
+
+test('creates pretty write stream with default pino-pretty', function (t) {
+  const dest = new Writable({
+    objectMode: true,
+    write (formatted, enc) {
+      t.is(/^.*INFO.*foo\n$/.test(formatted), true)
+      t.done()
+    }
+  })
+  const prettyStream = pinoms.prettyStream({ dest })
+  const log = pinoms({}, prettyStream)
+  log.info('foo')
+})
+
+test('creates pretty write stream with custom prettifier', function (t) {
+  const prettifier = function () {
+    return function () {
+      return 'FOO bar'
+    }
+  }
+  const dest = new Writable({
+    objectMode: true,
+    write (formatted, enc) {
+      t.is(formatted, 'FOO bar')
+      t.done()
+    }
+  })
+  const prettyStream = pinoms.prettyStream({ prettifier, dest })
+  const log = pinoms({}, prettyStream)
+  log.info('foo')
 })

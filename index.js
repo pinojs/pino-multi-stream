@@ -1,6 +1,7 @@
 'use strict'
 
 const pino = require('pino')
+const getPrettyStream = require('pino/lib/tools').getPrettyStream
 const multistream = require('./multistream')
 const {
   streamSym,
@@ -85,5 +86,9 @@ function pinoMultiStream (opts, stream) {
 
 Object.assign(pinoMultiStream, pino)
 pinoMultiStream.multistream = multistream
+pinoMultiStream.prettyStream = (args = {}) => {
+  const { prettifier, dest = process.stdout } = args
+  return getPrettyStream({}, prettifier, dest)
+}
 
 module.exports = pinoMultiStream

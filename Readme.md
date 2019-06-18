@@ -131,6 +131,29 @@ The behavior of the get accessor changes if `{ bunyan: true }` is passed
 to pinoms. In that case, it implements the
 [`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
 
+### pinoms.prettyStream({ [prettifier], [dest] })
+
+Manually create an output stream with a prettifier applied.
+
+```js
+var fs = require('fs');
+var pinoms = require('pino-multi-stream')
+
+var prettyStream = pinoms.prettyStream()
+var streams = [
+    {stream: fs.createWriteStream('my.log') },
+    {stream: prettyStream }
+]
+
+var logger = pinoms(pinoms.multistream(streams))
+
+logger.info("HELLO %s!", "World")
+```
+
+The options object may additionally contain a `prettifier` property to define which prettifier module to use. When not present, `prettifier` defaults to [`pino-pretty` ⇗](https://github.com/pinojs/pino-pretty) (must be installed as a separate dependency).
+
+The method may be passed an alternative write destination, but defaults to `process.stdout`.
+
 <a id="caveats"></a>
 ## Caveats
 
