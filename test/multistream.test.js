@@ -212,7 +212,7 @@ test('forwards metadata', function (t) {
           t.equal(log, this.lastLogger)
           t.equal(30, this.lastLevel)
           t.equal('a msg', this.lastMsg)
-          t.deepEqual({ hello: 'world' }, this.lastObj)
+          t.deepEqual({ hello: 'world', msg: 'a msg' }, this.lastObj)
         }
       }
     }
