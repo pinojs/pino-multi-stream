@@ -256,16 +256,18 @@ test('correctly set level if passed with just one stream', function (t) {
   t.done()
 })
 
-test('creates pretty write stream', async ({ is }) => {
+test('creates pretty write stream', function (t) {
   const prettyStream = pinoms.prettyStream()
-  is(typeof prettyStream.write, 'function')
+  t.is(typeof prettyStream.write, 'function')
+  t.done()
 })
 
-test('creates pretty write stream with default pino-pretty', async ({ is }) => {
+test('creates pretty write stream with default pino-pretty', function (t) {
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      is(/^.*INFO.*foo\n$/.test(formatted), true)
+      t.is(/^.*INFO.*foo\n$/.test(formatted), true)
+      t.done()
     }
   })
   const prettyStream = pinoms.prettyStream({ dest })
@@ -273,7 +275,7 @@ test('creates pretty write stream with default pino-pretty', async ({ is }) => {
   log.info('foo')
 })
 
-test('creates pretty write stream with custom prettifier', async ({ is }) => {
+test('creates pretty write stream with custom prettifier', function (t) {
   const prettifier = function () {
     return function () {
       return 'FOO bar'
@@ -282,7 +284,8 @@ test('creates pretty write stream with custom prettifier', async ({ is }) => {
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      is(formatted, 'FOO bar')
+      t.is(formatted, 'FOO bar')
+      t.done()
     }
   })
   const prettyStream = pinoms.prettyStream({ prettifier, dest })
