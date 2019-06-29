@@ -12,7 +12,7 @@ const defaultLevels = {
   trace: 10
 }
 
-function multistream(streamsArray, levels = defaultLevels) {
+function multistream (streamsArray, levels = defaultLevels) {
   var counter = 0
 
   streamsArray = streamsArray || []
