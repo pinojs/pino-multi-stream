@@ -131,7 +131,9 @@ The behavior of the get accessor changes if `{ bunyan: true }` is passed
 to pinoms. In that case, it implements the
 [`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
 
-### pinoms.prettyStream({ [prettifier], [dest] })
+### pinoms.prettyStream({ [opts],  [prettifier], [dest] })
+
+_Note_: after 4.1.0, the list of parameters was changed, now it is the same as that of `pino` `prettyStream`.
 
 Manually create an output stream with a prettifier applied.
 
