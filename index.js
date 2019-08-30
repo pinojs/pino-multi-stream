@@ -23,7 +23,7 @@ function pinoMultiStream (opts, stream) {
   delete iopts.bunyan
   const toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
 
-  if (iopts.hasOwnProperty('streams') === true) {
+  if (Object.prototype.hasOwnProperty.call(iopts, 'streams') === true) {
     return fixLevel(pino(toPino, multistream(iopts.streams)))
   }
 

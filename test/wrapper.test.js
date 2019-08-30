@@ -118,7 +118,8 @@ test('supports custom levels', function (t) {
       level: 35,
       stream: stream
     }
-    ] })
+    ]
+  })
   log.foo('bar')
 })
 
@@ -135,7 +136,8 @@ test('children support custom levels', function (t) {
       level: 35,
       stream: stream
     }
-    ] })
+    ]
+  })
   var child = parent.child({ child: 'yes' })
   child.foo('bar')
 })
