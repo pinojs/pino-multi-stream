@@ -262,11 +262,11 @@ test('creates pretty write stream', function (t) {
   t.done()
 })
 
-test('creates pretty write stream with default pino-pretty', function (t) {
+test('creates pretty write stream with default pino-pretty (empty options)', function (t) {
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      t.is(/^.*INFO.*foo\n$/.test(formatted), true)
+      t.is(/^\s*\[\d+\]\sINFO\s+\(\d+\s+on\s+.*?\):\sfoo\n$/.test(formatted), true)
       t.done()
     }
   })
@@ -289,6 +289,20 @@ test('creates pretty write stream with custom prettifier', function (t) {
     }
   })
   const prettyStream = pinoms.prettyStream({ prettifier, dest })
+  const log = pinoms({}, prettyStream)
+  log.info('foo')
+})
+
+test('creates pretty write stream with custom options for pino-pretty', function (t) {
+  const dest = new Writable({
+    objectMode: true,
+    write (formatted, enc) {
+      t.is(formatted, 'INFO : foo\n')
+      t.done()
+    }
+  })
+  const opts = { colorize: false, ignore: 'hostname,pid,time' }
+  const prettyStream = pinoms.prettyStream({ opts, dest })
   const log = pinoms({}, prettyStream)
   log.info('foo')
 })
