@@ -303,8 +303,8 @@ test('creates pretty write stream with custom options for pino-pretty', function
       t.done()
     }
   })
-  const opts = { colorize: false, ignore: 'hostname,pid,time' }
-  const prettyStream = pinoms.prettyStream({ opts, dest })
+  const prettyPrint = { colorize: false, ignore: 'hostname,pid,time' }
+  const prettyStream = pinoms.prettyStream({ prettyPrint, dest })
   const log = pinoms({}, prettyStream)
   log.info('foo')
 })
