@@ -87,7 +87,8 @@ function pinoMultiStream (opts, stream) {
 Object.assign(pinoMultiStream, pino)
 pinoMultiStream.multistream = multistream
 pinoMultiStream.prettyStream = (args = {}) => {
-  const { prettyPrint = {}, prettifier, dest = process.stdout } = args
+  const prettyPrint = args.opts || args.prettyPrint
+  const { prettifier, dest = process.stdout } = args
   return getPrettyStream(prettyPrint, prettifier, dest)
 }
 
