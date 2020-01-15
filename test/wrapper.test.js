@@ -295,7 +295,21 @@ test('creates pretty write stream with custom prettifier', function (t) {
   log.info('foo')
 })
 
-test('creates pretty write stream with custom options for pino-pretty', function (t) {
+test('creates pretty write stream with custom options for pino-pretty, via prettyPrint (default)', function (t) {
+  const dest = new Writable({
+    objectMode: true,
+    write (formatted, enc) {
+      t.is(formatted, 'INFO : foo\n')
+      t.done()
+    }
+  })
+  const prettyPrint = { colorize: false, ignore: 'hostname,pid,time' }
+  const prettyStream = pinoms.prettyStream({ prettyPrint, dest })
+  const log = pinoms({}, prettyStream)
+  log.info('foo')
+})
+
+test('creates pretty write stream with custom options for pino-pretty, via opts (obsolete)', function (t) {
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {

@@ -131,9 +131,9 @@ The behavior of the get accessor changes if `{ bunyan: true }` is passed
 to pinoms. In that case, it implements the
 [`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
 
-### pinoms.prettyStream({ [opts],  [prettifier], [dest] })
+### pinoms.prettyStream({ [prettyPrint],  [prettifier], [dest] })
 
-_Note_: after 4.1.0, the list of parameters was changed, now it is the same as that of `pino` `prettyStream`.
+_Note_:  after 4.1.0 this `pino-multi-stream` function was changed according to that of `pino`, and after 4.2.0 its API (names of parameters and their options) are in conformity with API of `pino`/`pino-pretty`, as it is presented [here](https://getpino.io/#/docs/pretty). Those changes are related to pretty-printing options only.
 
 Manually create an output stream with a prettifier applied.
 
@@ -155,6 +155,24 @@ logger.info("HELLO %s!", "World")
 The options object may additionally contain a `prettifier` property to define which prettifier module to use. When not present, `prettifier` defaults to [`pino-pretty` ⇗](https://github.com/pinojs/pino-pretty) (must be installed as a separate dependency).
 
 The method may be passed an alternative write destination, but defaults to `process.stdout`.
+
+Prettifying options (after 4.2.0) are to be set like this:
+
+```javascript
+const prettyStream = pinoms.prettyStream(
+{ 
+ prettyPrint: 
+  { colorize: true,
+    translateTime: "SYS:standard",
+    ignore: "hostname,pid" // add 'time' to remove timestamp
+  },
+ prettifier: require('pino-pretty') // not required, just an example of setting prettifier
+    // as well it is possible to set destination option
+}
+);
+```
+
+
 
 <a id="caveats"></a>
 ## Caveats
