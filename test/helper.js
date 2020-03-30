@@ -19,8 +19,7 @@ function check (t, chunk, level, msg) {
     pid: pid,
     hostname: hostname,
     level: level,
-    msg: msg,
-    v: 1
+    msg: msg
   })
 }
 
