@@ -1,4 +1,4 @@
-# pino-multi-stream &nbsp;[![Build Status](https://badgen.net/github/status/pinojs/pino-multi-stream/master/ci)](https://github.com/pinojs/pino-multi-stream)pino-multi-stream)
+# pino-multi-stream &nbsp;[![Build Status](https://badgen.net/github/status/pinojs/pino-multi-stream/master/ci)](https://github.com/pinojs/pino-multi-stream/actions?query=workflow%3ACI)
 
 _pino-multi-stream_ is a wrapper around the [pino](pino) logger. The purpose
 of _pino-multi-stream_ is to provide a stop-gap method for migrating from the
