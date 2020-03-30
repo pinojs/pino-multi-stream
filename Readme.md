@@ -1,24 +1,25 @@
-# pino-multi-stream &nbsp;[![Build Status](https://travis-ci.org/pinojs/pino-multi-stream.svg?branch=master)](https://travis-ci.org/pinojs/pino-multi-stream)
+# pino-multi-stream &nbsp;[![Build Status](https://badgen.net/github/status/pinojs/pino-multi-stream/master/ci)](https://github.com/pinojs/pino-multi-stream)pino-multi-stream)
 
-*pino-multi-stream* is a wrapper around the [pino](pino) logger. The purpose
-of *pino-multi-stream* is to provide a stop-gap method for migrating from the
-[Bunyan](bunyan) logger. Whereas *pino* allows only one destination stream,
-*pino-multi-stream* allows multiple destination streams via the same
+_pino-multi-stream_ is a wrapper around the [pino](pino) logger. The purpose
+of _pino-multi-stream_ is to provide a stop-gap method for migrating from the
+[Bunyan](bunyan) logger. Whereas _pino_ allows only one destination stream,
+_pino-multi-stream_ allows multiple destination streams via the same
 configuration API as Bunyan.
 
 Please see the [caveats](#caveats) section for some important information
 regarding the performance of this module.
 
-+ [Install](#install)
-+ [Usage](#usage)
-+ [API](#api)
-+ [Caveats](#caveats)
-+ [License](#license)
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [Caveats](#caveats)
+- [License](#license)
 
 [pino]: https://npm.im/pino
 [bunyan]: https://npm.im/bunyan
 
 <a id="install"></a>
+
 ## Install
 
 For Pino v5+
@@ -33,50 +34,52 @@ For Pino v4 and below:
 npm install -s pino-multi-stream@legacy #v3 pino-multi-stream line
 ```
 
-*pino-multi-stream* does not provide the CLI that *pino* provides. Therefore,
+_pino-multi-stream_ does not provide the CLI that _pino_ provides. Therefore,
 you should not install it globally.
 
 <a id="usage"></a>
+
 ## Usage
 
 ```js
 var fs = require('fs')
 var pinoms = require('pino-multi-stream')
 var streams = [
-  {stream: fs.createWriteStream('/tmp/info.stream.out')},
-  {level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out')}
+  { stream: fs.createWriteStream('/tmp/info.stream.out') },
+  { level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out') }
 ]
-var log = pinoms({streams: streams})
+var log = pinoms({ streams: streams })
 
 log.info('this will be written to /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/fatal.stream.out')
 ```
 
 <a id="api"></a>
+
 ## API
 
-The API for *pino-multi-stream* is the same as that for *pino*. Please
+The API for _pino-multi-stream_ is the same as that for _pino_. Please
 read [pino's documentation][pinoapi] for full details. Highlighted here are
-the specifics for *pino-multi-stream*:
+the specifics for _pino-multi-stream_:
 
-+ The signature for constructor remains the same, `pino(opts, stream)`, but
-  there are a few conditions under which you may get a real *pino* instance
-  or one wrapped by *pino-multi-stream*:
+- The signature for constructor remains the same, `pino(opts, stream)`, but
+  there are a few conditions under which you may get a real _pino_ instance
+  or one wrapped by _pino-multi-stream_:
 
-  1. If the `opts` parameter is a writable stream, then a real *pino*
+  1. If the `opts` parameter is a writable stream, then a real _pino_
      instance will be returned.
 
   2. If the `opts` parameter is an object with a singular `stream` property
-     then a real *pino* instance will be returned. If there is also a plural
+     then a real _pino_ instance will be returned. If there is also a plural
      `streams` property, the singular `stream` property takes precedence.
 
   3. If the `opts` parameter is an object with a plural `streams` property,
      does not include a singluar `stream` property, and is an array, then
-     a *pino-multi-stream* wrapped instance will be returned. Otherwise,
-     `opts.streams` is treated a single stream and a real *pino* instance
+     a _pino-multi-stream_ wrapped instance will be returned. Otherwise,
+     `opts.streams` is treated a single stream and a real _pino_ instance
      will be returned.
 
-+ The *pino* options object accepts a `streams` option, as alluded to in then
+- The _pino_ options object accepts a `streams` option, as alluded to in then
   previous item. This option should be an array of stream objects. A stream
   object is one with at least a `stream` property and, optionally, a `level`
   property. For example:
@@ -84,8 +87,8 @@ the specifics for *pino-multi-stream*:
   ```js
   var logger = pinoms({
     streams: [
-      {stream: process.stdout}, // an "info" level destination stream
-      {level: 'error', stream: process.stderr} // an "error" level destination stream
+      { stream: process.stdout }, // an "info" level destination stream
+      { level: 'error', stream: process.stderr } // an "error" level destination stream
     ]
   })
   ```
@@ -102,15 +105,18 @@ var fs = require('fs')
 var pino = require('pino')
 var multistream = require('pino-multi-stream').multistream
 var streams = [
-  {stream: fs.createWriteStream('/tmp/info.stream.out')},
-  {level: 'debug', stream: fs.createWriteStream('/tmp/debug.stream.out')},
-  {level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out')}
+  { stream: fs.createWriteStream('/tmp/info.stream.out') },
+  { level: 'debug', stream: fs.createWriteStream('/tmp/debug.stream.out') },
+  { level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out') }
 ]
 
-var log = pino({
-  level: 'debug' // this MUST be set at the lowest level of the
-                 // destinations
-}, multistream(streams))
+var log = pino(
+  {
+    level: 'debug' // this MUST be set at the lowest level of the
+    // destinations
+  },
+  multistream(streams)
+)
 
 log.debug('this will be written to /tmp/debug.stream.out')
 log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
@@ -131,25 +137,22 @@ The behavior of the get accessor changes if `{ bunyan: true }` is passed
 to pinoms. In that case, it implements the
 [`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
 
-### pinoms.prettyStream({ [prettyPrint],  [prettifier], [dest] })
+### pinoms.prettyStream({ [prettyPrint], [prettifier], [dest] })
 
-_Note_:  after 4.1.0 this `pino-multi-stream` function was changed according to that of `pino`, and after 4.2.0 its API (names of parameters and their options) are in conformity with API of `pino`/`pino-pretty`, as it is presented [here](https://getpino.io/#/docs/pretty). Those changes are related to pretty-printing options only.
+_Note_: after 4.1.0 this `pino-multi-stream` function was changed according to that of `pino`, and after 4.2.0 its API (names of parameters and their options) are in conformity with API of `pino`/`pino-pretty`, as it is presented [here](https://getpino.io/#/docs/pretty). Those changes are related to pretty-printing options only.
 
 Manually create an output stream with a prettifier applied.
 
 ```js
-var fs = require('fs');
+var fs = require('fs')
 var pinoms = require('pino-multi-stream')
 
 var prettyStream = pinoms.prettyStream()
-var streams = [
-    {stream: fs.createWriteStream('my.log') },
-    {stream: prettyStream }
-]
+var streams = [{ stream: fs.createWriteStream('my.log') }, { stream: prettyStream }]
 
 var logger = pinoms(pinoms.multistream(streams))
 
-logger.info("HELLO %s!", "World")
+logger.info('HELLO %s!', 'World')
 ```
 
 The options object may additionally contain a `prettifier` property to define which prettifier module to use. When not present, `prettifier` defaults to [`pino-pretty` ⇗](https://github.com/pinojs/pino-pretty) (must be installed as a separate dependency).
@@ -159,33 +162,30 @@ The method may be passed an alternative write destination, but defaults to `proc
 Prettifying options (after 4.2.0) are to be set like this:
 
 ```javascript
-const prettyStream = pinoms.prettyStream(
-{ 
- prettyPrint: 
-  { colorize: true,
-    translateTime: "SYS:standard",
-    ignore: "hostname,pid" // add 'time' to remove timestamp
+const prettyStream = pinoms.prettyStream({
+  prettyPrint: {
+    colorize: true,
+    translateTime: 'SYS:standard',
+    ignore: 'hostname,pid' // add 'time' to remove timestamp
   },
- prettifier: require('pino-pretty') // not required, just an example of setting prettifier
-    // as well it is possible to set destination option
-}
-);
+  prettifier: require('pino-pretty') // not required, just an example of setting prettifier
+  // as well it is possible to set destination option
+})
 ```
 
-
-
 <a id="caveats"></a>
+
 ## Caveats
 
 **Stern warning:** the performance of this module being dependent on the number
 of streams you supply cannot be overstated. This module is being provided so
-that you can switch to *pino* from *Bunyan* and get some immediate improvement,
-but it is not meant to be a long term solution. We *strongly* suggest that you
+that you can switch to _pino_ from _Bunyan_ and get some immediate improvement,
+but it is not meant to be a long term solution. We _strongly_ suggest that you
 use this module for only as long as it will take you to overhaul the way
 you handle logging in your application. `pino-multi-stream` offers close
 to zero overhead if _there is only one destination stream_.
 
-To illustrate what we mean, here is a benchmark of *pino* and *Bunyan* using
+To illustrate what we mean, here is a benchmark of _pino_ and _Bunyan_ using
 "multiple" streams to write to a single stream:
 
 ```
@@ -209,6 +209,7 @@ benchPinoMSTen*10000: 3127.361ms
 ```
 
 <a id="license"></a>
+
 ## License
 
 [MIT License](http://jsumners.mit-license.org/)
