@@ -28,7 +28,7 @@ function multistream (streamsArray) {
 
   if (Array.isArray(streamsArray)) {
     streamsArray.forEach(add, res)
-  } else if (streamsArray) {
+  } else {
     add.call(res, streamsArray)
   }
 
@@ -110,11 +110,7 @@ function multistream (streamsArray) {
 }
 
 function compareByLevel (a, b) {
-  if (a.level !== b.level) {
-    return a.level - b.level
-  } else {
-    return a.counter - b.counter
-  }
+  return a.level - b.level
 }
 
 module.exports = multistream

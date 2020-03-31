@@ -5,6 +5,7 @@ var pino = require('pino')
 var test = require('tap').test
 var pinoms = require('../')
 var { Writable } = require('stream')
+var strip = require('strip-ansi')
 
 test('sends to multiple streams', function (t) {
   var messageCount = 0
@@ -268,7 +269,7 @@ test('creates pretty write stream with default pino-pretty (empty options)', fun
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      t.is(/^\s*\[\d+\]\sINFO\s+\(\d+\s+on\s+.*?\):\sfoo\n$/.test(formatted), true)
+      t.is(/^\s*\[\d+\]\sINFO\s+\(\d+\s+on\s+.*?\):\sfoo\n$/.test(strip(formatted)), true)
       t.done()
     }
   })
@@ -321,4 +322,30 @@ test('creates pretty write stream with custom options for pino-pretty, via opts 
   const prettyStream = pinoms.prettyStream({ opts, dest })
   const log = pinoms({}, prettyStream)
   log.info('foo')
+})
+
+test('custom levels', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var streams = [
+    { stream: stream },
+    { level: 15, stream: stream },
+    { level: 60, stream: stream }
+  ]
+  var log = pinoms({
+    level: 'debug',
+    customLevels: {
+      blabla: 15
+    },
+    streams
+  })
+  log.blabla('blabla stream')
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 7)
+  t.done()
 })

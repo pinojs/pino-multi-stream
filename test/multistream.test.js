@@ -307,3 +307,29 @@ test('clone generates a new multistream with all stream at the same level', func
 
   t.done()
 })
+
+test('one stream', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var log = pino({
+    level: 'trace'
+  }, multistream({ stream, level: 'fatal' }))
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 1)
+  t.done()
+})
+
+test('no stream', function (t) {
+  var log = pino({
+    level: 'trace'
+  }, multistream())
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.done()
+})
