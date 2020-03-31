@@ -203,7 +203,7 @@ test('levelVal ovverides level', function (t) {
 })
 
 test('forwards metadata', function (t) {
-  t.plan(4)
+  t.plan(3)
   var streams = [
     {
       stream: {
@@ -211,7 +211,6 @@ test('forwards metadata', function (t) {
         write (chunk) {
           t.equal(log, this.lastLogger)
           t.equal(30, this.lastLevel)
-          t.equal('a msg', this.lastMsg)
           t.deepEqual({ hello: 'world', msg: 'a msg' }, this.lastObj)
         }
       }

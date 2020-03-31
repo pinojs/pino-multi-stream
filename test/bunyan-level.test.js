@@ -42,8 +42,7 @@ function levelTest (name, level) {
         pid: pid,
         hostname: hostname,
         level: level,
-        hello: 'world',
-        v: 1
+        hello: 'world'
       })
     }))
 
@@ -62,8 +61,7 @@ function levelTest (name, level) {
         hostname: hostname,
         level: level,
         msg: 'a string',
-        hello: 'world',
-        v: 1
+        hello: 'world'
       })
     }))
 
@@ -102,8 +100,7 @@ function levelTest (name, level) {
           type: 'Error',
           message: err.message,
           stack: err.stack
-        },
-        v: 1
+        }
       })
       cb()
     }))
@@ -123,8 +120,7 @@ function levelTest (name, level) {
         hostname: hostname,
         level: level,
         msg: 'hello world',
-        hello: 'world',
-        v: 1
+        hello: 'world'
       })
     }))
 
