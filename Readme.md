@@ -117,9 +117,9 @@ log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out
 log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
 ```
 
-`opts` is an Object with:
+`opts` multistream options object. Available options are:
 
-+ `dedupe`: Set this to `true` to send logs only to the stream with higher level. Default: `false`
++ `dedupe`: Set this to `true` to send logs only to the stream with the higher level. Default: `false`
 
 ### pinoms.level set accessor
 
