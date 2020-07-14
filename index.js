@@ -24,10 +24,10 @@ function pinoMultiStream (opts, stream) {
   const toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
 
   if (Object.prototype.hasOwnProperty.call(iopts, 'streams') === true) {
-    return fixLevel(pino(toPino, multistream(iopts.streams)))
+    return fixLevel(pino(toPino, multistream(iopts.streams, opts)))
   }
 
-  return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level })))
+  return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level }, opts)))
 
   function fixLevel (pino) {
     pino.level = pino[streamSym].minLevel

@@ -92,7 +92,7 @@ the specifics for *pino-multi-stream*:
 
 [pinoapi]: https://github.com/pinojs/pino#api
 
-### pinoms.multistream(streams)
+### pinoms.multistream(streams, opts)
 
 Manually create a single `multistream` as used internally by the
 wrapper:
@@ -116,6 +116,10 @@ log.debug('this will be written to /tmp/debug.stream.out')
 log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
 ```
+
+`opts` is an Object with:
+
++ `dedupe`: Set this to `true` to send logs only to the stream with higher level. Default: `false`
 
 ### pinoms.level set accessor
 
