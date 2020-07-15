@@ -12,10 +12,12 @@ const levels = {
   trace: 10
 }
 
-function multistream (streamsArray) {
+function multistream (streamsArray, opts) {
   var counter = 0
 
   streamsArray = streamsArray || []
+
+  opts = opts || { dedupe: false }
 
   const res = {
     write,
@@ -57,10 +59,16 @@ function multistream (streamsArray) {
           stream.lastObj = lastObj
           stream.lastLogger = lastLogger
         }
-        stream.write(data)
+        if (!opts.dedupe) {
+          stream.write(data)
+        }
       } else {
         break
       }
+    }
+
+    if (opts.dedupe && stream) {
+      stream.write(data)
     }
   }
 

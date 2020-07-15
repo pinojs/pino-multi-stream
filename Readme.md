@@ -92,7 +92,7 @@ the specifics for *pino-multi-stream*:
 
 [pinoapi]: https://github.com/pinojs/pino#api
 
-### pinoms.multistream(streams)
+### pinoms.multistream(streams, opts)
 
 Manually create a single `multistream` as used internally by the
 wrapper:
@@ -116,6 +116,31 @@ log.debug('this will be written to /tmp/debug.stream.out')
 log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
 log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
 ```
+
+`opts` multistream options object. Available options are:
+
++ `dedupe`: Set this to `true` to send logs only to the stream with the higher level. Default: `false`
+
+    `dedupe` flag can be useful for example when using pino-multi-stream to redirect `error` logs to `process.stderr` and others to `process.stdout`:
+
+    ```js
+    var pino = require('pino')
+    var multistream = require('pino-multi-stream').multistream
+    var streams = [
+      {stream: process.stdout},
+      {level: 'error', stream: process.stderr},
+    ]
+
+    var log = pino({
+      level: 'debug' // this MUST be set at the lowest level of the
+                    // destinations
+    }, multistream(streams, { dedupe: true }))
+
+    log.debug('this will be written ONLY to process.stdout')
+    log.info('this will be written ONLY to process.stdout')
+    log.error('this will be written ONLY to process.stderr')
+    log.fatal('this will be written ONLY to process.stderr')
+    ```
 
 ### pinoms.level set accessor
 
