@@ -124,7 +124,6 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
     `dedupe` flag can be useful for example when using pino-multi-stream to redirect `error` logs to `process.stderr` and others to `process.stdout`:
 
     ```js
-    var fs = require('fs')
     var pino = require('pino')
     var multistream = require('pino-multi-stream').multistream
     var streams = [
