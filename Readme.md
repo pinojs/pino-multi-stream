@@ -121,6 +121,28 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
 
 + `dedupe`: Set this to `true` to send logs only to the stream with the higher level. Default: `false`
 
+`dedupe` flag can be useful for example when using pino-multi-stream to redirect `error` logs to `process.stderr` and others to `process.stdout`:
+
+```js
+var fs = require('fs')
+var pino = require('pino')
+var multistream = require('pino-multi-stream').multistream
+var streams = [
+  {stream: process.stdout},
+  {level: 'error', stream: process.stderr},
+]
+
+var log = pino({
+  level: 'debug' // this MUST be set at the lowest level of the
+                 // destinations
+}, multistream(streams, { dedupe: true }))
+
+log.debug('this will be written ONLY to process.stdout')
+log.info('this will be written ONLY to process.stdout')
+log.error('this will be written ONLY to process.stderr')
+log.fatal('this will be written ONLY to process.stderr')
+```
+
 ### pinoms.level set accessor
 
 You can set the level to _all streams_ by changing the level property.
