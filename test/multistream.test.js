@@ -327,7 +327,7 @@ test('one stream', function (t) {
 test('dedupe', function (t) {
   var messageCount = 0
   var stream1 = writeStream(function (data, enc, cb) {
-    messageCount += 1
+    messageCount -= 1
     cb()
   })
 
@@ -338,7 +338,8 @@ test('dedupe', function (t) {
 
   var streams = [
     {
-      stream: stream1
+      stream: stream1,
+      level: 'info'
     },
     {
       stream: stream2,
@@ -349,6 +350,8 @@ test('dedupe', function (t) {
   var log = pino({
     level: 'trace'
   }, multistream(streams, { dedupe: true }))
+  log.info('info stream')
+  log.fatal('fatal stream')
   log.fatal('fatal stream')
   t.is(messageCount, 1)
   t.done()
