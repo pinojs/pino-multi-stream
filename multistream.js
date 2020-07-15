@@ -49,8 +49,8 @@ function multistream (streamsArray, opts) {
     var stream
     for (var i = 0; i < streams.length; i++) {
       dest = streams[i]
-      stream = dest.stream
       if (dest.level <= level) {
+        stream = dest.stream
         if (stream[metadata]) {
           const { lastTime, lastMsg, lastObj, lastLogger } = this
           stream.lastLevel = level
