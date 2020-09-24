@@ -1,8 +1,8 @@
 # pino-multi-stream&nbsp;![CI](https://github.com/pinojs/pino-multi-stream/workflows/CI/badge.svg)
 
-*pino-multi-stream* is a wrapper around the [pino](pino) logger. The purpose
+*pino-multi-stream* is a wrapper around the [pino][pino] logger. The purpose
 of *pino-multi-stream* is to provide a stop-gap method for migrating from the
-[Bunyan](bunyan) logger. Whereas *pino* allows only one destination stream,
+[Bunyan][bunyan] logger. Whereas *pino* allows only one destination stream,
 *pino-multi-stream* allows multiple destination streams via the same
 configuration API as Bunyan.
 
