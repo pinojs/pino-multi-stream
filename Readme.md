@@ -135,7 +135,7 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
         levels: {
             silent: Infinity,
             fatal: 60,
-        error: 50,
+            error: 50,
             warn: 50,
             info: 30,
             debug: 20,
