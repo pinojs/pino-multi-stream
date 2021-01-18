@@ -65,13 +65,11 @@ the specifics for *pino-multi-stream*:
 
   1. If the `opts` parameter is a writable stream, then a real *pino*
      instance will be returned.
-
-  2. If the `opts` parameter is an object with a singular `stream` property
+2. If the `opts` parameter is an object with a singular `stream` property
      then a real *pino* instance will be returned. If there is also a plural
      `streams` property, the singular `stream` property takes precedence.
-
   3. If the `opts` parameter is an object with a plural `streams` property,
-     does not include a singluar `stream` property, and is an array, then
+   does not include a singluar `stream` property, and is an array, then
      a *pino-multi-stream* wrapped instance will be returned. Otherwise,
      `opts.streams` is treated a single stream and a real *pino* instance
      will be returned.
@@ -119,6 +117,8 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
 
 `opts` multistream options object. Available options are:
 
+* `levels`:  Pass custom log level definitions to the instance as an object.
+
 + `dedupe`: Set this to `true` to send logs only to the stream with the higher level. Default: `false`
 
     `dedupe` flag can be useful for example when using pino-multi-stream to redirect `error` logs to `process.stderr` and others to `process.stdout`:
@@ -131,10 +131,23 @@ log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out a
       {level: 'error', stream: process.stderr},
     ]
 
+    var opts = {
+        levels: {
+            silent: Infinity,
+            fatal: 60,
+        error: 50,
+            warn: 50,
+            info: 30,
+            debug: 20,
+            trace: 10
+        },
+        dedupe: true,
+    }
+
     var log = pino({
       level: 'debug' // this MUST be set at the lowest level of the
                     // destinations
-    }, multistream(streams, { dedupe: true }))
+    }, multistream(streams, opts))
 
     log.debug('this will be written ONLY to process.stdout')
     log.info('this will be written ONLY to process.stdout')
@@ -185,8 +198,8 @@ Prettifying options (after 4.2.0) are to be set like this:
 
 ```javascript
 const prettyStream = pinoms.prettyStream(
-{ 
- prettyPrint: 
+{
+ prettyPrint:
   { colorize: true,
     translateTime: "SYS:standard",
     ignore: "hostname,pid" // add 'time' to remove timestamp
