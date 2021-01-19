@@ -28,6 +28,71 @@ test('sends to multiple streams using string levels', function (t) {
   t.done()
 })
 
+test('sends to multiple streams using custom levels', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var streams = [
+    { stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'trace', stream: stream },
+    { level: 'fatal', stream: stream },
+    { level: 'silent', stream: stream }
+  ]
+  var log = pino({
+    level: 'trace'
+  }, multistream(streams))
+  log.info('info stream')
+  log.debug('debug stream')
+  log.fatal('fatal stream')
+  t.is(messageCount, 9)
+  t.done()
+})
+
+test('sends to multiple streams using optionally predefined levels', function (t) {
+  var messageCount = 0
+  var stream = writeStream(function (data, enc, cb) {
+    messageCount += 1
+    cb()
+  })
+  var opts = {
+    levels: {
+      silent: Infinity,
+      fatal: 60,
+      error: 50,
+      warn: 50,
+      info: 30,
+      debug: 20,
+      trace: 10
+    }
+  }
+  var streams = [
+    { stream: stream },
+    { level: 'trace', stream: stream },
+    { level: 'debug', stream: stream },
+    { level: 'info', stream: stream },
+    { level: 'warn', stream: stream },
+    { level: 'error', stream: stream },
+    { level: 'fatal', stream: stream },
+    { level: 'silent', stream: stream }
+  ]
+  var mstream = multistream(streams, opts)
+  var log = pino({
+    level: 'trace'
+  }, mstream)
+  log.trace('trace stream')
+  log.debug('debug stream')
+  log.info('info stream')
+  log.warn('warn stream')
+  log.error('error stream')
+  log.fatal('fatal stream')
+  log.silent('silent stream')
+  t.is(messageCount, 24)
+  t.done()
+})
+
 test('sends to multiple streams using number levels', function (t) {
   var messageCount = 0
   var stream = writeStream(function (data, enc, cb) {

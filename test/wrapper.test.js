@@ -300,7 +300,7 @@ test('creates pretty write stream with custom options for pino-pretty, via prett
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      t.is(formatted, 'INFO : foo\n')
+      t.is(formatted, 'INFO\t: foo\n')
       t.done()
     }
   })
@@ -314,7 +314,7 @@ test('creates pretty write stream with custom options for pino-pretty, via opts 
   const dest = new Writable({
     objectMode: true,
     write (formatted, enc) {
-      t.is(formatted, 'INFO : foo\n')
+      t.is(formatted, 'INFO\t: foo\n')
       t.done()
     }
   })
