@@ -1,6 +1,9 @@
 'use strict'
 
 var writeStream = require('flush-write-stream')
+const { join } = require('path')
+const { readFileSync } = require('fs')
+const os = require('os')
 var test = require('tap').test
 var pino = require('pino')
 var multistream = require('../').multistream
@@ -430,4 +433,28 @@ test('no stream', function (t) {
   log.debug('debug stream')
   log.fatal('fatal stream')
   t.done()
+})
+
+test('flushSync', function (t) {
+  const tmp = join(
+    os.tmpdir(),
+    '_' + Math.random().toString(36).substr(2, 9)
+  )
+  const destination = pino.destination({ dest: tmp, sync: false, minLength: 4096 })
+  const log = pino({ level: 'info' }, multistream([{ level: 'info', stream: destination }]))
+  destination.on('ready', () => {
+    log.info('foo')
+    log.info('bar')
+    t.is(readFileSync(tmp, { encoding: 'utf-8' }).split('\n').length - 1, 0)
+    pino.final(log, (err, finalLogger) => {
+      if (err) {
+        t.fail()
+        return t.done()
+      }
+      t.is(readFileSync(tmp, { encoding: 'utf-8' }).split('\n').length - 1, 2)
+      finalLogger.info('biz')
+      t.is(readFileSync(tmp, { encoding: 'utf-8' }).split('\n').length - 1, 3)
+      t.done()
+    })()
+  })
 })
