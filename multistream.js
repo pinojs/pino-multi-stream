@@ -26,6 +26,7 @@ function multistream (streamsArray, opts) {
   const res = {
     write,
     add,
+    flushSync,
     minLevel: 0,
     streams: [],
     clone,
@@ -76,6 +77,14 @@ function multistream (streamsArray, opts) {
     }
   }
 
+  function flushSync () {
+    for (const { stream } of this.streams) {
+      if (typeof stream.flushSync === 'function') {
+        stream.flushSync()
+      }
+    }
+  }
+
   function add (dest) {
     const { streams } = this
     if (typeof dest.write === 'function') {
@@ -116,6 +125,7 @@ function multistream (streamsArray, opts) {
       minLevel: level,
       streams,
       clone,
+      flushSync,
       [metadata]: true
     }
   }
