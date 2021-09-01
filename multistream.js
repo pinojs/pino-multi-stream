@@ -13,12 +13,12 @@ const defaultLevels = {
 }
 
 function multistream (streamsArray, opts) {
-  var counter = 0
+  let counter = 0
 
   streamsArray = streamsArray || []
   opts = opts || { dedupe: false }
 
-  var levels = defaultLevels
+  let levels = defaultLevels
   if (opts.levels && typeof opts.levels === 'object') {
     levels = opts.levels
   }
@@ -48,11 +48,11 @@ function multistream (streamsArray, opts) {
 
   // we can exit early because the streams are ordered by level
   function write (data) {
-    var dest
+    let dest
     const level = this.lastLevel
     const { streams } = this
-    var stream
-    for (var i = 0; i < streams.length; i++) {
+    let stream
+    for (let i = 0; i < streams.length; i++) {
       dest = streams[i]
       if (dest.level <= level) {
         stream = dest.stream
@@ -110,9 +110,9 @@ function multistream (streamsArray, opts) {
   }
 
   function clone (level) {
-    var streams = new Array(this.streams.length)
+    const streams = new Array(this.streams.length)
 
-    for (var i = 0; i < streams.length; i++) {
+    for (let i = 0; i < streams.length; i++) {
       streams[i] = {
         level: level,
         stream: this.streams[i].stream

@@ -33,10 +33,10 @@ function pinoMultiStream (opts, stream) {
     pino.level = pino[streamSym].minLevel
 
     // internal knowledge dependency
-    var setLevel = pino[setLevelSym]
+    const setLevel = pino[setLevelSym]
 
     pino[setLevelSym] = function (val) {
-      var prev = this[levelValSym]
+      const prev = this[levelValSym]
 
       // needed to support bunyan .level()
       if (typeof val === 'function') {
@@ -55,7 +55,7 @@ function pinoMultiStream (opts, stream) {
     if (isBunyan) {
       Object.defineProperty(pino, 'level', {
         get: function () {
-          var that = this
+          const that = this
           return function (val) {
             if (val !== undefined) {
               that[setLevelSym](val)
