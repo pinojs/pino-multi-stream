@@ -458,3 +458,22 @@ test('flushSync', function (t) {
     })()
   })
 })
+test('supports multiple streams with pretty print', function (t) {
+  let count = 0
+  const stream = writeStream(function (data, enc, cb) {
+    count++
+    t.isNot(data.toString().match(/INFO.*:.*pretty print/), null)
+    return cb()
+  })
+  t.plan(3)
+  const pinoms = require('../')
+  const logger = pinoms({
+    prettyPrint: true,
+    streams: [
+      { stream: stream },
+      { level: 'info', stream: stream }
+    ]
+  })
+  logger.info('pretty print')
+  t.equal(count, 2)
+})

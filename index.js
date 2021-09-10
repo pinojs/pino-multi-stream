@@ -30,8 +30,11 @@ function pinoMultiStream (opts, stream) {
   return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level }, opts)))
 
   function fixLevel (pino) {
-    pino.level = pino[streamSym].minLevel
-
+    if (pino[streamSym].minLevel) {
+      pino.level = pino[streamSym].minLevel
+    } else {
+      pino.level = pino[levelValSym]
+    }
     // internal knowledge dependency
     var setLevel = pino[setLevelSym]
 
