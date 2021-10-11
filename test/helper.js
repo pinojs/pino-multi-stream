@@ -1,13 +1,13 @@
 'use strict'
 
-var writeStream = require('flush-write-stream')
-var split = require('split2')
-var os = require('os')
-var pid = process.pid
-var hostname = os.hostname()
+const writeStream = require('flush-write-stream')
+const split = require('split2')
+const os = require('os')
+const pid = process.pid
+const hostname = os.hostname()
 
 function sink (func) {
-  var result = split(JSON.parse)
+  const result = split(JSON.parse)
   result.pipe(writeStream.obj(func))
   return result
 }
@@ -15,7 +15,7 @@ function sink (func) {
 function check (t, chunk, level, msg) {
   t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
   delete chunk.time
-  t.deepEqual(chunk, {
+  t.same(chunk, {
     pid: pid,
     hostname: hostname,
     level: level,

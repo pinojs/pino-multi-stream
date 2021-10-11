@@ -46,7 +46,7 @@ const blogFour = bunyan.createLogger({
 const max = 10
 const run = bench([
   function benchBunyanTen (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       blogTen.info('hello world')
       blogTen.debug('hello world')
       blogTen.trace('hello world')
@@ -56,7 +56,7 @@ const run = bench([
     setImmediate(cb)
   },
   function benchPinoMSTen (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       pinomsTen.info('hello world')
       pinomsTen.debug('hello world')
       pinomsTen.trace('hello world')
@@ -66,7 +66,7 @@ const run = bench([
     setImmediate(cb)
   },
   function benchBunyanFour (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       blogFour.info('hello world')
       blogFour.debug('hello world')
       blogFour.trace('hello world')
@@ -74,7 +74,7 @@ const run = bench([
     setImmediate(cb)
   },
   function benchPinoMSFour (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       pinomsFour.info('hello world')
       pinomsFour.debug('hello world')
       pinomsFour.trace('hello world')
@@ -82,13 +82,13 @@ const run = bench([
     setImmediate(cb)
   },
   function benchBunyanOne (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       blogOne.info('hello world')
     }
     setImmediate(cb)
   },
   function benchPinoMSOne (cb) {
-    for (var i = 0; i < max; i++) {
+    for (let i = 0; i < max; i++) {
       pinomsOne.info('hello world')
     }
     setImmediate(cb)

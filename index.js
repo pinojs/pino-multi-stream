@@ -2,7 +2,6 @@
 
 const pino = require('pino')
 const getPrettyStream = require('pino/lib/tools').getPrettyStream
-const multistream = require('./multistream')
 const {
   streamSym,
   setLevelSym,
@@ -24,22 +23,19 @@ function pinoMultiStream (opts, stream) {
   const toPino = Object.assign({}, iopts, { streams: undefined, stream: undefined })
 
   if (Object.prototype.hasOwnProperty.call(iopts, 'streams') === true) {
-    return fixLevel(pino(toPino, multistream(iopts.streams, opts)))
+    return fixLevel(pino(toPino, pino.multistream(iopts.streams, opts)))
   }
 
-  return fixLevel(pino(toPino, multistream({ stream: iopts.stream, level: iopts.level }, opts)))
+  return fixLevel(pino(toPino, pino.multistream({ stream: iopts.stream, level: iopts.level }, opts)))
 
   function fixLevel (pino) {
-    if (pino[streamSym].minLevel) {
-      pino.level = pino[streamSym].minLevel
-    } else {
-      pino.level = pino[levelValSym]
-    }
+    pino.level = pino[streamSym].minLevel
+
     // internal knowledge dependency
-    var setLevel = pino[setLevelSym]
+    const setLevel = pino[setLevelSym]
 
     pino[setLevelSym] = function (val) {
-      var prev = this[levelValSym]
+      const prev = this[levelValSym]
 
       // needed to support bunyan .level()
       if (typeof val === 'function') {
@@ -58,7 +54,7 @@ function pinoMultiStream (opts, stream) {
     if (isBunyan) {
       Object.defineProperty(pino, 'level', {
         get: function () {
-          var that = this
+          const that = this
           return function (val) {
             if (val !== undefined) {
               that[setLevelSym](val)
@@ -80,7 +76,6 @@ function pinoMultiStream (opts, stream) {
 }
 
 Object.assign(pinoMultiStream, pino)
-pinoMultiStream.multistream = multistream
 pinoMultiStream.prettyStream = (args = {}) => {
   const prettyPrint = args.opts || args.prettyPrint
   const { prettifier, dest = process.stdout } = args

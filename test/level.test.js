@@ -1,19 +1,19 @@
 'use strict'
 
-var test = require('tap').test
-var os = require('os')
-var pino = require('../')
+const test = require('tap').test
+const os = require('os')
+const pino = require('../')
 
-var sink = require('./helper').sink
-var check = require('./helper').check
+const sink = require('./helper').sink
+const check = require('./helper').check
 
-var pid = process.pid
-var hostname = os.hostname()
+const pid = process.pid
+const hostname = os.hostname()
 
 function levelTest (name, level) {
   test(name + ' logs as ' + level, function (t) {
     t.plan(2)
-    var instance = pino(sink(function (chunk, enc, cb) {
+    const instance = pino(sink(function (chunk, enc, cb) {
       check(t, chunk, level, 'hello world')
     }))
 
@@ -23,10 +23,10 @@ function levelTest (name, level) {
 
   test('passing objects at level ' + name, function (t) {
     t.plan(2)
-    var instance = pino(sink(function (chunk, enc, cb) {
+    const instance = pino(sink(function (chunk, enc, cb) {
       t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
       delete chunk.time
-      t.deepEqual(chunk, {
+      t.same(chunk, {
         pid: pid,
         hostname: hostname,
         level: level,
@@ -40,10 +40,10 @@ function levelTest (name, level) {
 
   test('passing an object and a string at level ' + name, function (t) {
     t.plan(2)
-    var instance = pino(sink(function (chunk, enc, cb) {
+    const instance = pino(sink(function (chunk, enc, cb) {
       t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
       delete chunk.time
-      t.deepEqual(chunk, {
+      t.same(chunk, {
         pid: pid,
         hostname: hostname,
         level: level,
@@ -58,7 +58,7 @@ function levelTest (name, level) {
 
   test('formatting logs as ' + name, function (t) {
     t.plan(2)
-    var instance = pino(sink(function (chunk, enc, cb) {
+    const instance = pino(sink(function (chunk, enc, cb) {
       check(t, chunk, level, 'hello 42')
     }))
 
@@ -68,18 +68,19 @@ function levelTest (name, level) {
 
   test('passing error with a serializer at level ' + name, function (t) {
     t.plan(2)
-    var err = new Error('myerror')
-    var instance = pino({
+    const err = new Error('myerror')
+    const instance = pino({
       serializers: {
         err: pino.stdSerializers.err
       }
     }, sink(function (chunk, enc, cb) {
       t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
       delete chunk.time
-      t.deepEqual(chunk, {
+      t.same(chunk, {
         pid: pid,
         hostname: hostname,
         level: level,
+        msg: 'myerror',
         err: {
           type: 'Error',
           message: err.message,
@@ -95,10 +96,10 @@ function levelTest (name, level) {
 
   test('child logger for level ' + name, function (t) {
     t.plan(2)
-    var instance = pino(sink(function (chunk, enc, cb) {
+    const instance = pino(sink(function (chunk, enc, cb) {
       t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
       delete chunk.time
-      t.deepEqual(chunk, {
+      t.same(chunk, {
         pid: pid,
         hostname: hostname,
         level: level,
@@ -108,14 +109,14 @@ function levelTest (name, level) {
     }))
 
     instance.level = name
-    var child = instance.child({
+    const child = instance.child({
       hello: 'world'
     })
     child[name]('hello world')
   })
 
   test('child logger for level ' + name + ' does not change parent level', function (t) {
-    var instance = pino({
+    const instance = pino({
       customLevels: {
         buu: level + 1
       }
@@ -125,7 +126,7 @@ function levelTest (name, level) {
 
     instance.level = level + 1
 
-    var child = instance.child({
+    const child = instance.child({
       hello: 'world'
     })
 
