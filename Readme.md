@@ -21,16 +21,16 @@ regarding the performance of this module.
 <a id="install"></a>
 ## Install
 
-For Pino v5+
+For Pino v7+
 
 ```js
 npm install -s pino-multi-stream
 ```
 
-For Pino v4 and below:
+For Pino v5 and v6
 
 ```js
-npm install -s pino-multi-stream@legacy #v3 pino-multi-stream line
+npm install -s pino-multi-stream@legacy
 ```
 
 *pino-multi-stream* does not provide the CLI that *pino* provides. Therefore,
@@ -90,71 +90,6 @@ the specifics for *pino-multi-stream*:
 
 [pinoapi]: https://github.com/pinojs/pino#api
 
-### pinoms.multistream(streams, opts)
-
-Manually create a single `multistream` as used internally by the
-wrapper:
-
-```js
-var fs = require('fs')
-var pino = require('pino')
-var multistream = require('pino-multi-stream').multistream
-var streams = [
-  {stream: fs.createWriteStream('/tmp/info.stream.out')},
-  {level: 'debug', stream: fs.createWriteStream('/tmp/debug.stream.out')},
-  {level: 'fatal', stream: fs.createWriteStream('/tmp/fatal.stream.out')}
-]
-
-var log = pino({
-  level: 'debug' // this MUST be set at the lowest level of the
-                 // destinations
-}, multistream(streams))
-
-log.debug('this will be written to /tmp/debug.stream.out')
-log.info('this will be written to /tmp/debug.stream.out and /tmp/info.stream.out')
-log.fatal('this will be written to /tmp/debug.stream.out, /tmp/info.stream.out and /tmp/fatal.stream.out')
-```
-
-`opts` multistream options object. Available options are:
-
-* `levels`:  Pass custom log level definitions to the instance as an object.
-
-+ `dedupe`: Set this to `true` to send logs only to the stream with the higher level. Default: `false`
-
-    `dedupe` flag can be useful for example when using pino-multi-stream to redirect `error` logs to `process.stderr` and others to `process.stdout`:
-
-    ```js
-    var pino = require('pino')
-    var multistream = require('pino-multi-stream').multistream
-    var streams = [
-      {stream: process.stdout},
-      {level: 'error', stream: process.stderr},
-    ]
-
-    var opts = {
-        levels: {
-            silent: Infinity,
-            fatal: 60,
-            error: 50,
-            warn: 50,
-            info: 30,
-            debug: 20,
-            trace: 10
-        },
-        dedupe: true,
-    }
-
-    var log = pino({
-      level: 'debug' // this MUST be set at the lowest level of the
-                    // destinations
-    }, multistream(streams, opts))
-
-    log.debug('this will be written ONLY to process.stdout')
-    log.info('this will be written ONLY to process.stdout')
-    log.error('this will be written ONLY to process.stderr')
-    log.fatal('this will be written ONLY to process.stderr')
-    ```
-
 ### pinoms.level set accessor
 
 You can set the level to _all streams_ by changing the level property.
@@ -170,8 +105,6 @@ to pinoms. In that case, it implements the
 [`bunyan.level`](https://github.com/trentm/node-bunyan#levels) function.
 
 ### pinoms.prettyStream({ [prettyPrint],  [prettifier], [dest] })
-
-_Note_:  after 4.1.0 this `pino-multi-stream` function was changed according to that of `pino`, and after 4.2.0 its API (names of parameters and their options) are in conformity with API of `pino`/`pino-pretty`, as it is presented [here](https://getpino.io/#/docs/pretty). Those changes are related to pretty-printing options only.
 
 Manually create an output stream with a prettifier applied.
 
