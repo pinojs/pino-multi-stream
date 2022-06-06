@@ -30,7 +30,7 @@
     "bunyan": "^1.8.12",
     "fastbench": "^1.0.1",
     "flush-write-stream": "^2.0.0",
-    "pino-pretty": "^7.0.0",
+    "pino-pretty": "^8.0.0",
     "pre-commit": "^1.2.2",
     "split2": "^4.0.0",
     "standard": "^17.0.0",
